@@ -1,27 +1,26 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'treeVertex_provider.dart';
+part of 'graph_provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$treeVertexProviderHash() =>
-    r'bc24d0e07795ac135cb90ca8d768894e05e6de7f';
+String _$graphProviderHash() => r'2d6985d811e35df76f902a432cdc214bde553e0f';
 
-/// See also [TreeVertexProvider].
-@ProviderFor(TreeVertexProvider)
-final treeVertexProviderProvider =
-    AutoDisposeNotifierProvider<TreeVertexProvider, List<TreeVertex>>.internal(
-      TreeVertexProvider.new,
-      name: r'treeVertexProviderProvider',
+/// See also [GraphProvider].
+@ProviderFor(GraphProvider)
+final graphProviderProvider =
+    AutoDisposeNotifierProvider<GraphProvider, Set<Vertex>>.internal(
+      GraphProvider.new,
+      name: r'graphProviderProvider',
       debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
           ? null
-          : _$treeVertexProviderHash,
+          : _$graphProviderHash,
       dependencies: null,
       allTransitiveDependencies: null,
     );
 
-typedef _$TreeVertexProvider = AutoDisposeNotifier<List<TreeVertex>>;
+typedef _$GraphProvider = AutoDisposeNotifier<Set<Vertex>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

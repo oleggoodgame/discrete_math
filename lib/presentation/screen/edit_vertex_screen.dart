@@ -1,19 +1,19 @@
-import 'package:discrete_math/application/provider/treeVertex_provider.dart';
-import 'package:discrete_math/data/entity/treeVertex_entity.dart';
+import 'package:discrete_math/application/provider/graph_provider.dart';
+import 'package:discrete_math/data/entity/vertex_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-class AddTreeVertexScreen extends ConsumerStatefulWidget {
-  AddTreeVertexScreen({this.vertex, this.editor, super.key});
+class EditVertexScreen extends ConsumerStatefulWidget {
+  EditVertexScreen({this.vertex, this.editor, super.key});
   bool? editor = false;
-  TreeVertex? vertex;
+  Vertex? vertex;
   @override
-  ConsumerState<AddTreeVertexScreen> createState() =>
-      _AddTreeVertexScreenState();
+  ConsumerState<EditVertexScreen> createState() =>
+      _EditVertexScreenState();
 }
 
-class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
+class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
   late final TextEditingController _nameController;
   late final TextEditingController _offSetXController;
   final _formKey = GlobalKey<FormState>();
@@ -23,17 +23,24 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
   @override
   void initState() {
     super.initState();
-    if ((widget.editor ?? false) && widget.vertex !=null) {
+    if ((widget.editor ?? false) && widget.vertex != null) {
       final vertex = widget.vertex!;
       _nameController = TextEditingController(text: vertex.data);
-      _offSetXController = TextEditingController(text: vertex.offset.dx.toString());
-      _offSetYController = TextEditingController(text: vertex.offset.dy.toString());
-      _connectController = TextEditingController(text: vertex.connection.toString());
+      _offSetXController = TextEditingController(
+        text: vertex.offset.dx.toString(),
+      );
+      _offSetYController = TextEditingController(
+        text: vertex.offset.dy.toString(),
+      );
+      _connectController = TextEditingController(
+        text: vertex.connection.join(' '),
+      );
+    } else {
+      _nameController = TextEditingController();
+      _offSetXController = TextEditingController();
+      _offSetYController = TextEditingController();
+      _connectController = TextEditingController();
     }
-    _nameController = TextEditingController();
-    _offSetXController = TextEditingController();
-    _offSetYController = TextEditingController();
-    _connectController = TextEditingController();
   }
 
   @override
@@ -46,7 +53,9 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
   Widget build(BuildContext context) {
     final fifi = widget.editor ?? false;
     return Scaffold(
-      appBar: AppBar(title:  fifi ? Text('Edit Tree Vertex') : Text('Add Tree Vertex') ),
+      appBar: AppBar(
+        title: fifi ? Text('Edit Tree Vertex') : Text('Add Tree Vertex'),
+      ),
       body: Form(
         key: _formKey,
         child: Column(
@@ -56,10 +65,10 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
               label: 'Name',
               field: TextControllerWidget(
                 controller: _nameController,
-                label: 'Id',
+                label: 'data',
                 hint: 'Enter name, less than 4 characters',
                 validator: (v) {
-                  if (ref.read(treeVertexProviderProvider).contains(v)) {
+                  if (ref.read(graphProviderProvider).contains(v)) {
                     return 'There already this name';
                   }
                   if (v != null && v.length >= 4) {
@@ -103,13 +112,25 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
               field: TextControllerWidget(
                 controller: _connectController,
                 label: 'Enter names, that you want to connect to',
-                hint: 'Example: 1 2 3 4',
+                hint: 'Example: 1 A 3 4',
                 validator: (v) {
-                  final connect = _connectController.text.split(' ');
+                  final connect = _connectController.text
+                      .split(' ')
+                      .where((e) => e.trim().isNotEmpty)
+                      .toSet();
+                  final vertices = ref.read(graphProviderProvider);
 
-                  if (!ref.read(treeVertexProviderProvider).contains(connect)) {
-                    return "There is no such name, please look again";
+                  for (final i in connect) {
+                    final exists = vertices.any((vertex) => vertex.data == i);
+
+                    if (!exists) {
+                      if (connect.isEmpty) {
+                        return null;
+                      }
+                      return 'There is no vertex with name "$i"';
+                    }
                   }
+
                   return null;
                 },
               ),
@@ -117,7 +138,7 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
             PrimaryButton(
               text: fifi ? 'Edit Vertex' : 'Add Vertex',
               onPressed: () {
-                _onSubmit();
+                _onSubmit(fifi);
               },
             ),
             SizedBox(height: 50),
@@ -134,11 +155,12 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
     _connectController.clear();
   }
 
-  void _onSubmit() {
+  void _onSubmit(bool fifi) {
     if (!_formKey.currentState!.validate()) return;
-    final connect = _connectController.text.split(' ');
-    final vertex = TreeVertex(
-      id: _nameController.text,
+
+    final connect = _connectController.text.split(' ').toSet();
+
+    final vertex = Vertex(
       data: _nameController.text,
       offset: Offset(
         double.parse(_offSetXController.text),
@@ -146,7 +168,22 @@ class _AddTreeVertexScreenState extends ConsumerState<AddTreeVertexScreen> {
       ),
       connection: connect,
     );
-    ref.read(treeVertexProviderProvider.notifier).addVertex(vertex);
+    if (fifi == true) {
+      ref
+          .read(graphProviderProvider.notifier)
+          .editVertex(vertex);
+    } else {
+      ref.read(graphProviderProvider.notifier).addVertex(vertex);
+    }
+    // final vertex = Vertex(
+    //   data: _nameController.text,
+    //   data: _nameController.text,
+    //   offset: Offset(
+    //     double.parse(_offSetXController.text),
+    //     double.parse(_offSetYController.text),
+    //   ),
+    //   connection: connect,
+    // );
     context.go('/editor');
   }
 }

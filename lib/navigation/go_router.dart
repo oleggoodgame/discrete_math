@@ -1,5 +1,5 @@
-import 'package:discrete_math/data/entity/treeVertex_entity.dart';
-import 'package:discrete_math/presentation/screen/add_treeVertex_screen.dart';
+import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/presentation/screen/edit_vertex_screen.dart';
 import 'package:discrete_math/presentation/screen/editor_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -21,16 +21,16 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
-        path: '/editor',
+        path: '/edit_vertex',
         builder: (context, state) {
-          final vertex = state.extra as TreeVertex;
-          return AddTreeVertexScreen(editor: true, vertex: vertex);
+          final vertex = state.extra as Vertex;
+          return EditVertexScreen(editor: true, vertex: vertex);
         },
       ),
       GoRoute(
-        path: '/addVertex',
+        path: '/add_vertex',
         builder: (context, state) {
-          return AddTreeVertexScreen();
+          return EditVertexScreen();
         },
       ),
     ],

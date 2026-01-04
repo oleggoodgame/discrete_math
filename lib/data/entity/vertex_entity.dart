@@ -1,13 +1,13 @@
 // import 'dart:ui';
 
 // class TreeVertex<T> {
-//   final String id;
+//   final String data;
 //   final T data;
 //   final List<String> connection;
 //   final Offset offset;
 
 //   TreeVertex({
-//     required this.id,
+//     required this.data,
 //     required this.data,
 //     required this.connection,
 //     required this.offset,
@@ -16,14 +16,19 @@
 import 'dart:ui';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'treeVertex_entity.freezed.dart';
-
+part 'vertex_entity.freezed.dart';
+enum VertexState {
+  idle,
+  visiting,
+  visited,
+}
 @freezed
-class TreeVertex with _$TreeVertex {
-  const factory TreeVertex({
-    required String id,
+class Vertex with _$Vertex {
+  const factory Vertex({
+    // required String data,
     required String data,
-    required List<String> connection,
+    required Set<String> connection,
     required Offset offset,
-  }) = _TreeVertex;
+     @Default(VertexState.idle) VertexState state,
+  }) = _Vertex;
 }
