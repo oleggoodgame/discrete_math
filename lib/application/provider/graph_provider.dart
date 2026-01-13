@@ -12,15 +12,35 @@ class GraphProvider extends _$GraphProvider {
     return {
       Vertex(data: 'A', offset: const Offset(100, 100), connection: {'B', 'C'}),
       Vertex(data: 'B', offset: const Offset(200, 200), connection: {'A'}),
-      Vertex(data: 'C', offset: const Offset(300, 100), connection: {'A'}),
+      Vertex(
+        data: 'C',
+        offset: const Offset(300, 100),
+        connection: {'A', 'D', 'V'},
+      ),
+      Vertex(data: 'D', offset: const Offset(300, 300), connection: {'C', 'Q'}),
+      Vertex(
+        data: 'Q',
+        offset: const Offset(400, 400),
+        connection: {'D', 'V', 'U'},
+      ),
+
+      Vertex(data: 'V', offset: const Offset(400, 300), connection: {'C', 'Q'}),
+
+      Vertex(data: 'U', offset: const Offset(200, 500), connection: {'V', 'Q'}),
     };
   }
 
   void addVertex(Vertex vertex) {
-    for(final i in vertex.connection){
+    for (final i in vertex.connection) {
       connectVertices(vertex.data, i);
     }
     state = {...state, vertex};
+  }
+
+  void setHead(Vertex vertex) {
+    final updated = {vertex, ...state.where((v) => v.data != vertex.data)};
+
+    state = updated;
   }
 
   void updateOffset(String data, Offset position) {

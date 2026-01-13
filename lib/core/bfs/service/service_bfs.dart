@@ -2,7 +2,7 @@ import 'dart:collection';
 
 import 'package:discrete_math/data/entity/vertex_entity.dart';
 
-class GraphService {
+class BfsService {
   Stream<Set<Vertex>> bfsSteps({
     required Vertex start,
     required Map<String, Vertex> graph,

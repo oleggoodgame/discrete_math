@@ -1,22 +1,21 @@
-import 'package:discrete_math/core/bfs/service/service_bfs.dart';
+import 'package:discrete_math/core/dfs/service/service_dfs.dart';
 import 'package:discrete_math/data/entity/graph/event/graph_event.dart';
 import 'package:discrete_math/data/entity/graph/state/graph_state.dart';
 import 'package:discrete_math/data/entity/vertex_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class BfsBloc extends Bloc<GraphEvent, GraphState> {
-  final BfsService service;
+class DfsBloc extends Bloc<GraphEvent, GraphState> {
+  final DfsService service;
 
-  BfsBloc({required this.service})
-    : super(GraphInitial()) {
+  DfsBloc({required this.service}) : super(GraphInitial()) {
     on<StartGraph>((event, emit) async {
       emit(GraphProcessing());
-      print("Start BLOC");
-      await for (final step in service.bfsSteps(
+      print("Start DFS");
+      await for (final step in service.dfsSteps(
         start: event.start,
         graph: event.graph,
       )) {
-              print("STEP: $step");
+        print("STEP: $step");
 
         emit(GraphResult(step));
       }

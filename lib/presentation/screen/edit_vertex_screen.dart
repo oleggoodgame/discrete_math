@@ -1,5 +1,8 @@
 import 'package:discrete_math/application/provider/graph_provider.dart';
 import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/presentation/widget/labaled_field_row_children.dart';
+import 'package:discrete_math/presentation/widget/primary_button_widget.dart';
+import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -7,7 +10,7 @@ import 'package:go_router/go_router.dart';
 class EditVertexScreen extends ConsumerStatefulWidget {
   EditVertexScreen({this.vertex, this.editor, super.key});
   bool? editor = false;
-  Vertex? vertex;
+  final Vertex? vertex;
   @override
   ConsumerState<EditVertexScreen> createState() =>
       _EditVertexScreenState();
@@ -188,112 +191,3 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
   }
 }
 
-class TextControllerWidget extends StatelessWidget {
-  static const double fieldWidth = 260;
-
-  final TextEditingController controller;
-  final String label;
-  final String hint;
-  final String? Function(String?)? validator;
-
-  const TextControllerWidget({
-    super.key,
-    required this.controller,
-    required this.label,
-    required this.hint,
-    this.validator,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: fieldWidth,
-      child: TextFormField(
-        controller: controller,
-        validator: validator,
-        decoration: _inputDecoration(),
-      ),
-    );
-  }
-
-  InputDecoration _inputDecoration() {
-    return InputDecoration(
-      labelText: label,
-      hintText: hint,
-      floatingLabelBehavior: FloatingLabelBehavior.auto,
-      filled: true,
-      fillColor: Colors.grey.shade100,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
-      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: BorderSide(color: Colors.grey.shade400),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.blue, width: 2),
-      ),
-      errorBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(12),
-        borderSide: const BorderSide(color: Colors.red),
-      ),
-    );
-  }
-}
-
-class PrimaryButton extends StatelessWidget {
-  final String text;
-  final VoidCallback onPressed;
-
-  const PrimaryButton({super.key, required this.text, required this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 200,
-      height: 44,
-      child: ElevatedButton(
-        onPressed: onPressed,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blueGrey,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-          elevation: 2,
-        ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class LabeledFieldRow extends StatelessWidget {
-  final String label;
-  final Widget field;
-
-  const LabeledFieldRow({super.key, required this.label, required this.field});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            width: 90,
-            child: Text(label, style: Theme.of(context).textTheme.bodyMedium),
-          ),
-          const SizedBox(width: 16),
-          field,
-        ],
-      ),
-    );
-  }
-}

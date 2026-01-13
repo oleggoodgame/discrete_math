@@ -1,6 +1,7 @@
 import 'package:discrete_math/data/entity/vertex_entity.dart';
 import 'package:discrete_math/presentation/screen/edit_vertex_screen.dart';
 import 'package:discrete_math/presentation/screen/editor_screen.dart';
+import 'package:discrete_math/presentation/screen/information_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -31,6 +32,12 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/add_vertex',
         builder: (context, state) {
           return EditVertexScreen();
+        },
+      ),
+      GoRoute(
+        path: '/information_screen',
+        builder: (context, state) {
+          return InformationScreen();
         },
       ),
     ],

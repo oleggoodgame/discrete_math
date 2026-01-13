@@ -2,8 +2,13 @@ import 'package:discrete_math/application/provider/fab_provider.dart';
 import 'package:discrete_math/application/provider/selected_vertexes_provider.dart';
 import 'package:discrete_math/application/provider/graph_provider.dart';
 import 'package:discrete_math/core/bfs/bloc/bloc_bfs.dart';
-import 'package:discrete_math/core/bfs/event/bfs_event.dart';
-import 'package:discrete_math/core/bfs/state/bfs_state.dart';
+import 'package:discrete_math/core/detour/bloc/detour_bloc.dart';
+import 'package:discrete_math/core/detour/event/detour_event.dart';
+import 'package:discrete_math/core/detour/state/detour_state.dart';
+import 'package:discrete_math/core/dfs/bloc/bloc_dfs.dart';
+import 'package:discrete_math/data/entity/graph/event/graph_event.dart';
+import 'package:discrete_math/data/entity/graph/state/graph_state.dart';
+import 'package:discrete_math/data/entity/vertex_entity.dart';
 import 'package:discrete_math/presentation/painter/graph_painer.dart';
 import 'package:discrete_math/presentation/widget/treeVertex_widget.dart';
 import 'package:flutter/material.dart';
@@ -68,20 +73,50 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     _controller.dispose();
     super.dispose();
   }
+  // return BlocListener<GraphBloc, GraphState>(
+  //   bloc: bloc,
+  //   listener: (context, state) {
+  //     if (state is GraphResult) {
+  //       ref.read(graphProviderProvider.notifier).setVertices(state.visited);
+  //     }
+  //   },
 
   @override
   Widget build(BuildContext context) {
     final vertices = ref.watch(graphProviderProvider);
     final selectedVertex = ref.watch(selectedVertexProvider);
     final isFabOpen = ref.watch(fabMenuOpenProvider);
-    final bloc = ref.read(graphBlocProvider);
-    return BlocListener<GraphBloc, GraphState>(
-      bloc: bloc,
-      listener: (context, state) {
-        if (state is GraphResult) {
-          ref.read(graphProviderProvider.notifier).setVertices(state.visited);
-        }
-      },
+
+    return MultiBlocListener(
+      listeners: [
+        BlocListener<DetourBloc, DetourState>(
+          listener: (context, state) {
+            if (state is DetourResult) {
+              ref
+                  .read(graphProviderProvider.notifier)
+                  .setVertices(state.visited);
+            }
+          },
+        ),
+        BlocListener<BfsBloc, GraphState>(
+          listener: (context, state) {
+            if (state is GraphResult) {
+              ref
+                  .read(graphProviderProvider.notifier)
+                  .setVertices(state.visited);
+            }
+          },
+        ),
+        BlocListener<DfsBloc, GraphState>(
+          listener: (context, state) {
+            if (state is GraphResult) {
+              ref
+                  .read(graphProviderProvider.notifier)
+                  .setVertices(state.visited);
+            }
+          },
+        ),
+      ],
       child: Scaffold(
         appBar: AppBar(title: const Text('Editor Screen')),
         floatingActionButton: FloatingActionButton(
@@ -138,35 +173,45 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
             if (isFabOpen)
               Positioned(
                 right: 16,
-                bottom: 90,
+                bottom: 70,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     _FabMenuItem(
                       icon: Icons.timeline,
                       label: 'Обхід',
-                      onTap: () {},
+                      onTap: () {
+                        final vertices = ref.read(graphProviderProvider);
+
+                        _showDetourDialog(context, vertices);
+                      },
                     ),
                     _FabMenuItem(
                       icon: Icons.account_tree,
                       label: 'DFS',
-                      onTap: () {},
+                      onTap: () {
+                        final vertices = ref.read(graphProviderProvider);
+                        final graphMap = {for (final v in vertices) v.data: v};
+                        context.read<DfsBloc>().add(
+                          StartGraph(start: vertices.first, graph: graphMap),
+                        );
+                      },
                     ),
                     _FabMenuItem(
                       icon: Icons.swap_horiz,
                       label: 'BFS',
                       onTap: () {
+                        final vertices = ref.read(graphProviderProvider);
                         final graphMap = {for (final v in vertices) v.data: v};
-
-                        bloc.add(
-                          StartBfs(start: vertices.first, graph: graphMap),
+                        context.read<BfsBloc>().add(
+                          StartGraph(start: vertices.first, graph: graphMap),
                         );
                       },
                     ),
                     _FabMenuItem(
                       icon: Icons.info_outline,
                       label: 'Information',
-                      onTap: () {},
+                      onTap: () => context.push('/information_screen'),
                     ),
                     _FabMenuItem(
                       icon: Icons.add_circle_outline,
@@ -191,6 +236,77 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _showDetourDialog(BuildContext context, Set<Vertex> vertices) {
+    final startController = TextEditingController();
+    final findController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Обхід графа'),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: startController,
+                decoration: const InputDecoration(
+                  labelText: 'Enter start vertex',
+                ),
+              ),
+              const SizedBox(height: 12),
+              TextField(
+                controller: findController,
+                decoration: const InputDecoration(
+                  labelText: 'Enter find vertex',
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                final startId = startController.text.trim();
+                final findId = findController.text.trim();
+
+                final startVertex = vertices
+                    .where((v) => v.data == startId)
+                    .firstOrNull;
+                final findVertex = vertices
+                    .where((v) => v.data == findId)
+                    .firstOrNull;
+
+                if (startVertex == null || findVertex == null) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Vertex not found')),
+                  );
+                  return;
+                }
+
+                final graphMap = {for (final v in vertices) v.data: v};
+
+                context.read<DetourBloc>().add(
+                  StartDetour(
+                    start: startVertex,
+                    find: findVertex,
+                    graph: graphMap,
+                  ),
+                );
+
+                Navigator.pop(context);
+              },
+              child: const Text('Start'),
+            ),
+          ],
+        );
+      },
     );
   }
 }
