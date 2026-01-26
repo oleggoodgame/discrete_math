@@ -506,7 +506,7 @@ class DetourService {
     if (meetId == null) return;
 
     if (!existsPath(from: meetId, to: find.data, graph: graph)) {
-      return; 
+      return;
     }
 
     final path = <String>[];

@@ -12,8 +12,7 @@ class EditVertexScreen extends ConsumerStatefulWidget {
   bool? editor = false;
   final Vertex? vertex;
   @override
-  ConsumerState<EditVertexScreen> createState() =>
-      _EditVertexScreenState();
+  ConsumerState<EditVertexScreen> createState() => _EditVertexScreenState();
 }
 
 class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
@@ -71,7 +70,10 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
                 label: 'data',
                 hint: 'Enter name, less than 4 characters',
                 validator: (v) {
-                  if (ref.read(graphProviderProvider).contains(v)) {
+                  if (ref
+                      .read(graphProviderProvider)
+                      .where((vertex) => vertex.data == v)
+                      .isNotEmpty) {
                     return 'There already this name';
                   }
                   if (v != null && v.length >= 4) {
@@ -88,8 +90,11 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
                 label: 'Offset X position',
                 hint: 'Enter offset X',
                 validator: (v) {
-                  if (v != null && v.length < 1 && v.length > 4) {
-                    return 'must be less than 1000 and more than 0';
+                  if (v == null) {
+                    return 'Need to enter position';
+                  }
+                  if (v.length < 1 && v.length > 4) {
+                    return 'Must be less than 1000 and more than 0';
                   }
                   return null;
                 },
@@ -103,8 +108,11 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
                 label: 'Offset Y position',
                 hint: 'Enter offset Y',
                 validator: (v) {
-                  if (v != null && v.length < 1 && v.length > 4) {
-                    return 'must be less than 1000 and more than 0';
+                  if (v == null) {
+                    return 'Need to enter position';
+                  }
+                  if (v.length < 1 && v.length > 4) {
+                    return 'Must be less than 1000 and more than 0';
                   }
                   return null;
                 },
@@ -115,7 +123,7 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
               field: TextControllerWidget(
                 controller: _connectController,
                 label: 'Enter names, that you want to connect to',
-                hint: 'Example: 1 A 3 4',
+                hint: 'Example: A B C',
                 validator: (v) {
                   final connect = _connectController.text
                       .split(' ')
@@ -172,9 +180,7 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
       connection: connect,
     );
     if (fifi == true) {
-      ref
-          .read(graphProviderProvider.notifier)
-          .editVertex(vertex);
+      ref.read(graphProviderProvider.notifier).editVertex(vertex);
     } else {
       ref.read(graphProviderProvider.notifier).addVertex(vertex);
     }
@@ -190,4 +196,3 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
     context.go('/editor');
   }
 }
-

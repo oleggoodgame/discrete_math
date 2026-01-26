@@ -247,7 +247,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Обхід графа'),
+          title: const Text('Path between two vertexes'),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
