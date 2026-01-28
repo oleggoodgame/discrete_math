@@ -1,6 +1,6 @@
 import 'dart:ui';
 
-import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/application/data/entity/vertex_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'graph_provider.g.dart';
@@ -9,25 +9,25 @@ part 'graph_provider.g.dart';
 class GraphProvider extends _$GraphProvider {
   @override
   Set<Vertex> build() {
-    return {
-      Vertex(data: 'A', offset: const Offset(100, 100), connection: {'B', 'C'}),
-      Vertex(data: 'B', offset: const Offset(200, 200), connection: {'A'}),
-      Vertex(
-        data: 'C',
-        offset: const Offset(300, 100),
-        connection: {'A', 'D', 'V'},
-      ),
-      Vertex(data: 'D', offset: const Offset(300, 300), connection: {'C', 'Q'}),
-      Vertex(
-        data: 'Q',
-        offset: const Offset(400, 400),
-        connection: {'D', 'V', 'U'},
-      ),
+    return {};
+    //   Vertex(data: 'A', offset: const Offset(100, 100), connection: {'B', 'C'}),
+    //   Vertex(data: 'B', offset: const Offset(200, 200), connection: {'A'}),
+    //   Vertex(
+    //     data: 'C',
+    //     offset: const Offset(300, 100),
+    //     connection: {'A', 'D', 'V'},
+    //   ),
+    //   Vertex(data: 'D', offset: const Offset(300, 300), connection: {'C', 'Q'}),
+    //   Vertex(
+    //     data: 'Q',
+    //     offset: const Offset(400, 400),
+    //     connection: {'D', 'V', 'U'},
+    //   ),
 
-      Vertex(data: 'V', offset: const Offset(400, 300), connection: {'C', 'Q'}),
+    //   Vertex(data: 'V', offset: const Offset(400, 300), connection: {'C', 'Q'}),
 
-      Vertex(data: 'U', offset: const Offset(200, 500), connection: {'V', 'Q'}),
-    };
+    //   Vertex(data: 'U', offset: const Offset(200, 500), connection: {'V', 'Q'}),
+    // };
   }
 
   void addVertex(Vertex vertex) {

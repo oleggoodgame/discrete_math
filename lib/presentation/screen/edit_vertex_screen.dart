@@ -1,5 +1,5 @@
 import 'package:discrete_math/application/provider/graph_provider.dart';
-import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/application/data/entity/vertex_entity.dart';
 import 'package:discrete_math/presentation/widget/labaled_field_row_children.dart';
 import 'package:discrete_math/presentation/widget/primary_button_widget.dart';
 import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
@@ -193,6 +193,6 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
     //   ),
     //   connection: connect,
     // );
-    context.go('/editor');
+    context.pop();
   }
 }

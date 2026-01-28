@@ -1,4 +1,4 @@
-import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/application/data/entity/vertex_entity.dart';
 import 'package:flutter/material.dart';
 
 class GraphPainter extends CustomPainter {
