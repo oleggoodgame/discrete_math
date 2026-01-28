@@ -1,15 +1,19 @@
 import 'package:discrete_math/core/auth/signup/bloc/signup_bloc.dart';
 import 'package:discrete_math/core/auth/signup/service/signup_service.dart';
-import 'package:discrete_math/core/bfs/bloc/bloc_bfs.dart';
-import 'package:discrete_math/core/bfs/service/service_bfs.dart';
-import 'package:discrete_math/core/detour/bloc/detour_bloc.dart';
-import 'package:discrete_math/core/detour/service/detour_service.dart';
-import 'package:discrete_math/core/dfs/bloc/bloc_dfs.dart';
-import 'package:discrete_math/core/dfs/service/service_dfs.dart';
-import 'package:discrete_math/core/eulerian/bloc/eulirian_bloc.dart';
-import 'package:discrete_math/core/eulerian/service/eulirian_service.dart';
-import 'package:discrete_math/core/hamiltonian/bloc/hamiltonian_bloc.dart';
-import 'package:discrete_math/core/hamiltonian/service/hamiltonian_service.dart';
+import 'package:discrete_math/core/graph/bfs/bloc/bloc_bfs.dart';
+import 'package:discrete_math/core/graph/bfs/service/service_bfs.dart';
+import 'package:discrete_math/core/graph/detour/bloc/detour_bloc.dart';
+import 'package:discrete_math/core/graph/detour/service/detour_service.dart';
+import 'package:discrete_math/core/graph/dfs/bloc/bloc_dfs.dart';
+import 'package:discrete_math/core/graph/dfs/service/service_dfs.dart';
+import 'package:discrete_math/core/graph/edit/bloc/edit_bloc.dart';
+import 'package:discrete_math/core/graph/edit/service/edit_service.dart';
+import 'package:discrete_math/core/graph/eulerian/bloc/eulirian_bloc.dart';
+import 'package:discrete_math/core/graph/eulerian/service/eulirian_service.dart';
+import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
+import 'package:discrete_math/core/graph/graphs/service/graphs_service.dart';
+import 'package:discrete_math/core/graph/hamiltonian/bloc/hamiltonian_bloc.dart';
+import 'package:discrete_math/core/graph/hamiltonian/service/hamiltonian_service.dart';
 import 'package:discrete_math/core/auth/login/bloc/login_bloc.dart';
 import 'package:discrete_math/core/auth/login/service/login_service.dart';
 import 'package:discrete_math/firebase_options.dart';
@@ -49,6 +53,8 @@ class MainApp extends ConsumerWidget {
         ),
         BlocProvider<LoginBloc>(create: (_) => LoginBloc(LoginService())),
         BlocProvider<SignupBloc>(create: (_) => SignupBloc(SignupService())),
+        BlocProvider<GraphsCubit>(create: (_) => GraphsCubit(GraphsService())),
+        BlocProvider<EditCubit>(create: (_) => EditCubit(EditService())),
       ],
       child: MaterialApp.router(routerConfig: router),
     );

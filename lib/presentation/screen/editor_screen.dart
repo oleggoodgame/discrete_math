@@ -1,14 +1,17 @@
+import 'package:discrete_math/application/data/entity/graph/graph_entity.dart';
 import 'package:discrete_math/application/provider/fab_provider.dart';
 import 'package:discrete_math/application/provider/selected_vertexes_provider.dart';
 import 'package:discrete_math/application/provider/graph_provider.dart';
-import 'package:discrete_math/core/bfs/bloc/bloc_bfs.dart';
-import 'package:discrete_math/core/detour/bloc/detour_bloc.dart';
-import 'package:discrete_math/core/detour/event/detour_event.dart';
-import 'package:discrete_math/core/detour/state/detour_state.dart';
-import 'package:discrete_math/core/dfs/bloc/bloc_dfs.dart';
-import 'package:discrete_math/data/entity/graph/event/graph_event.dart';
-import 'package:discrete_math/data/entity/graph/state/graph_state.dart';
-import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/core/graph/bfs/bloc/bloc_bfs.dart';
+import 'package:discrete_math/core/graph/detour/bloc/detour_bloc.dart';
+import 'package:discrete_math/core/graph/detour/event/detour_event.dart';
+import 'package:discrete_math/core/graph/detour/state/detour_state.dart';
+import 'package:discrete_math/core/graph/dfs/bloc/bloc_dfs.dart';
+import 'package:discrete_math/application/data/entity/graph/event/graph_event.dart';
+import 'package:discrete_math/application/data/entity/graph/state/graph_state.dart';
+import 'package:discrete_math/application/data/entity/vertex_entity.dart';
+import 'package:discrete_math/core/graph/edit/bloc/edit_bloc.dart';
+import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
 import 'package:discrete_math/presentation/painter/graph_painer.dart';
 import 'package:discrete_math/presentation/widget/treeVertex_widget.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +20,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class EditorScreen extends ConsumerStatefulWidget {
-  const EditorScreen({super.key});
-
+  const EditorScreen({required this.graph, super.key});
+  final GraphEntity graph;
   @override
   ConsumerState<EditorScreen> createState() => _EditorScreenState();
 }
@@ -69,6 +72,15 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   }
 
   @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref.read(graphProviderProvider.notifier).setVertices(widget.graph.data);
+    });
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -116,124 +128,160 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
             }
           },
         ),
+        // BlocListener<EditCubit, EditState>(
+        //   listener: (context, state) {
+        //     if (state is EditSuccess) {
+        //       context.go('/graphs');
+        //     }
+        //   },
+        // ),
       ],
-      child: Scaffold(
-        appBar: AppBar(title: const Text('Editor Screen')),
-        floatingActionButton: FloatingActionButton(
-          backgroundColor: Colors.blueGrey,
-          onPressed: () {
-            ref.read(fabMenuOpenProvider.notifier).state = !isFabOpen;
-          },
-          child: Icon(
-            isFabOpen ? Icons.close : Icons.menu,
-            color: Colors.black,
+      child: PopScope(
+        onPopInvokedWithResult: (didPop, result) {
+          context.read<EditCubit>().editGraph(
+            data: ref.read(graphProviderProvider),
+            id: widget.graph.id,
+          );
+          context.read<GraphsCubit>().loadGraphs();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            title: const Text('Editor Screen'),
+            actions: [
+              IconButton(
+                onPressed: () {
+                  context.read<EditCubit>().editGraph(
+                    data: ref.read(graphProviderProvider),
+                    id: widget.graph.id,
+                  );
+                },
+                icon: Icon(Icons.save),
+              ),
+            ],
           ),
-        ),
-        body: Stack(
-          children: [
-            InteractiveViewer(
-              transformationController: _controller,
-              minScale: 0.5,
-              maxScale: 3.0,
-              boundaryMargin: const EdgeInsets.all(0),
-              constrained: false,
-              child: Center(
-                child: Container(
-                  width: canvasSize,
-                  height: canvasSize,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: Colors.black, width: 3),
+          floatingActionButton: FloatingActionButton(
+            backgroundColor: Colors.blueGrey,
+            onPressed: () {
+              ref.read(fabMenuOpenProvider.notifier).state = !isFabOpen;
+            },
+            child: Icon(
+              isFabOpen ? Icons.close : Icons.menu,
+              color: Colors.black,
+            ),
+          ),
+          body: Stack(
+            children: [
+              InteractiveViewer(
+                transformationController: _controller,
+                minScale: 0.5,
+                maxScale: 3.0,
+                boundaryMargin: const EdgeInsets.all(0),
+                constrained: false,
+                child: Center(
+                  child: Container(
+                    width: canvasSize,
+                    height: canvasSize,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      border: Border.all(color: Colors.black, width: 3),
+                    ),
+                    child: Stack(
+                      children: [
+                        CustomPaint(
+                          size: const Size(canvasSize, canvasSize),
+                          painter: GraphPainter(vertices: vertices),
+                        ),
+
+                        for (final vertex in vertices)
+                          Positioned(
+                            left: vertex.offset.dx - 25,
+                            top: vertex.offset.dy - 25,
+                            child: TreeVertexWidget(vertex: vertex),
+                          ),
+
+                        if (selectedVertex != null)
+                          Positioned(
+                            left: selectedVertex.offset.dx + 30,
+                            top: selectedVertex.offset.dy - 20,
+                            child: VertexContextMenu(vertex: selectedVertex),
+                          ),
+                      ],
+                    ),
                   ),
-                  child: Stack(
+                ),
+              ),
+              if (isFabOpen)
+                Positioned(
+                  right: 16,
+                  bottom: 70,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      CustomPaint(
-                        size: const Size(canvasSize, canvasSize),
-                        painter: GraphPainter(vertices: vertices),
+                      _FabMenuItem(
+                        icon: Icons.timeline,
+                        label: 'Обхід',
+                        onTap: () {
+                          final vertices = ref.read(graphProviderProvider);
+
+                          _showDetourDialog(context, vertices);
+                        },
                       ),
-
-                      for (final vertex in vertices)
-                        Positioned(
-                          left: vertex.offset.dx - 25,
-                          top: vertex.offset.dy - 25,
-                          child: TreeVertexWidget(vertex: vertex),
-                        ),
-
-                      if (selectedVertex != null)
-                        Positioned(
-                          left: selectedVertex.offset.dx + 30,
-                          top: selectedVertex.offset.dy - 20,
-                          child: VertexContextMenu(vertex: selectedVertex),
-                        ),
+                      _FabMenuItem(
+                        icon: Icons.account_tree,
+                        label: 'DFS',
+                        onTap: () {
+                          final vertices = ref.read(graphProviderProvider);
+                          final graphMap = {
+                            for (final v in vertices) v.data: v,
+                          };
+                          context.read<DfsBloc>().add(
+                            StartGraph(start: vertices.first, graph: graphMap),
+                          );
+                        },
+                      ),
+                      _FabMenuItem(
+                        icon: Icons.swap_horiz,
+                        label: 'BFS',
+                        onTap: () {
+                          final vertices = ref.read(graphProviderProvider);
+                          final graphMap = {
+                            for (final v in vertices) v.data: v,
+                          };
+                          context.read<BfsBloc>().add(
+                            StartGraph(start: vertices.first, graph: graphMap),
+                          );
+                        },
+                      ),
+                      _FabMenuItem(
+                        icon: Icons.info_outline,
+                        label: 'Information',
+                        onTap: () => context.push('/information_screen'),
+                      ),
+                      _FabMenuItem(
+                        icon: Icons.add_circle_outline,
+                        label: 'Add',
+                        onTap: () => context.push('/add_vertex'),
+                      ),
+                      const SizedBox(height: 6),
                     ],
                   ),
                 ),
-              ),
-            ),
-            if (isFabOpen)
               Positioned(
-                right: 16,
-                bottom: 70,
+                left: 16,
+                bottom: 16,
                 child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    _FabMenuItem(
-                      icon: Icons.timeline,
-                      label: 'Обхід',
-                      onTap: () {
-                        final vertices = ref.read(graphProviderProvider);
-
-                        _showDetourDialog(context, vertices);
-                      },
+                    _ZoomButton(icon: Icons.add, onPressed: () => _zoom(0.2)),
+                    const SizedBox(height: 8),
+                    _ZoomButton(
+                      icon: Icons.remove,
+                      onPressed: () => _zoom(-0.2),
                     ),
-                    _FabMenuItem(
-                      icon: Icons.account_tree,
-                      label: 'DFS',
-                      onTap: () {
-                        final vertices = ref.read(graphProviderProvider);
-                        final graphMap = {for (final v in vertices) v.data: v};
-                        context.read<DfsBloc>().add(
-                          StartGraph(start: vertices.first, graph: graphMap),
-                        );
-                      },
-                    ),
-                    _FabMenuItem(
-                      icon: Icons.swap_horiz,
-                      label: 'BFS',
-                      onTap: () {
-                        final vertices = ref.read(graphProviderProvider);
-                        final graphMap = {for (final v in vertices) v.data: v};
-                        context.read<BfsBloc>().add(
-                          StartGraph(start: vertices.first, graph: graphMap),
-                        );
-                      },
-                    ),
-                    _FabMenuItem(
-                      icon: Icons.info_outline,
-                      label: 'Information',
-                      onTap: () => context.push('/information_screen'),
-                    ),
-                    _FabMenuItem(
-                      icon: Icons.add_circle_outline,
-                      label: 'Add',
-                      onTap: () => context.push('/add_vertex'),
-                    ),
-                    const SizedBox(height: 6),
                   ],
                 ),
               ),
-            Positioned(
-              left: 16,
-              bottom: 16,
-              child: Column(
-                children: [
-                  _ZoomButton(icon: Icons.add, onPressed: () => _zoom(0.2)),
-                  const SizedBox(height: 8),
-                  _ZoomButton(icon: Icons.remove, onPressed: () => _zoom(-0.2)),
-                ],
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

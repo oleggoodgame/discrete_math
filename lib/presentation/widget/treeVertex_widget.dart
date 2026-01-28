@@ -1,7 +1,7 @@
 import 'package:discrete_math/application/provider/connect_vertex_provider.dart';
 import 'package:discrete_math/application/provider/selected_vertexes_provider.dart';
 import 'package:discrete_math/application/provider/graph_provider.dart';
-import 'package:discrete_math/data/entity/vertex_entity.dart';
+import 'package:discrete_math/application/data/entity/vertex_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

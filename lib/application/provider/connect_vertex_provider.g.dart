@@ -6,7 +6,7 @@ part of 'connect_vertex_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$connectVertexHash() => r'b3e04aa354b0c364956b40c2ea28abddf9dd38c0';
+String _$connectVertexHash() => r'00718d36016fe2e7ab278a2b25bc8aea157789ae';
 
 /// See also [ConnectVertex].
 @ProviderFor(ConnectVertex)
