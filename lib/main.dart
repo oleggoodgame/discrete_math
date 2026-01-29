@@ -1,3 +1,4 @@
+import 'package:discrete_math/application/data/style/light_style.dart';
 import 'package:discrete_math/core/auth/signup/bloc/signup_bloc.dart';
 import 'package:discrete_math/core/auth/signup/service/signup_service.dart';
 import 'package:discrete_math/core/graph/bfs/bloc/bloc_bfs.dart';
@@ -56,7 +57,7 @@ class MainApp extends ConsumerWidget {
         BlocProvider<GraphsCubit>(create: (_) => GraphsCubit(GraphsService())),
         BlocProvider<EditCubit>(create: (_) => EditCubit(EditService())),
       ],
-      child: MaterialApp.router(routerConfig: router),
+      child: MaterialApp.router(routerConfig: router, theme: lightTheme),
     );
   }
 }

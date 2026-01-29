@@ -20,13 +20,7 @@ class PrimaryButton extends StatelessWidget {
           ),
           elevation: 2,
         ),
-        child: Text(
-          text,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.5,
-          ),
-        ),
+        child: Text(text, style: Theme.of(context).textTheme.titleMedium),
       ),
     );
   }

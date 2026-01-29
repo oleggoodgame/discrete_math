@@ -1,4 +1,5 @@
 import 'package:discrete_math/application/data/entity/graph/graph_entity.dart';
+import 'package:discrete_math/application/data/style/theme_style.dart';
 import 'package:discrete_math/application/provider/fab_provider.dart';
 import 'package:discrete_math/application/provider/selected_vertexes_provider.dart';
 import 'package:discrete_math/application/provider/graph_provider.dart';
@@ -13,6 +14,7 @@ import 'package:discrete_math/application/data/entity/vertex_entity.dart';
 import 'package:discrete_math/core/graph/edit/bloc/edit_bloc.dart';
 import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
 import 'package:discrete_math/presentation/painter/graph_painer.dart';
+import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
 import 'package:discrete_math/presentation/widget/treeVertex_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -210,10 +212,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                   ),
                 ),
               ),
-              if (isFabOpen)
+              if (isFabOpen) // Можливо тут треба буде додати перевірку екрану щоб гарно виходило
                 Positioned(
                   right: 16,
-                  bottom: 70,
+                  bottom: 90,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
@@ -290,69 +292,122 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
   void _showDetourDialog(BuildContext context, Set<Vertex> vertices) {
     final startController = TextEditingController();
     final findController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
 
     showDialog(
       context: context,
+      barrierDismissible: false,
       builder: (context) {
-        return AlertDialog(
-          title: const Text('Path between two vertexes'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: startController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter start vertex',
-                ),
-              ),
-              const SizedBox(height: 12),
-              TextField(
-                controller: findController,
-                decoration: const InputDecoration(
-                  labelText: 'Enter find vertex',
-                ),
-              ),
-            ],
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                final startId = startController.text.trim();
-                final findId = findController.text.trim();
-
-                final startVertex = vertices
-                    .where((v) => v.data == startId)
-                    .firstOrNull;
-                final findVertex = vertices
-                    .where((v) => v.data == findId)
-                    .firstOrNull;
-
-                if (startVertex == null || findVertex == null) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Vertex not found')),
-                  );
-                  return;
-                }
-
-                final graphMap = {for (final v in vertices) v.data: v};
-
-                context.read<DetourBloc>().add(
-                  StartDetour(
-                    start: startVertex,
-                    find: findVertex,
-                    graph: graphMap,
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Form(
+              key: formKey,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  /// 🔹 TITLE
+                  Text(
+                    'Path between vertices',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    textAlign: TextAlign.center,
                   ),
-                );
 
-                Navigator.pop(context);
-              },
-              child: const Text('Start'),
+                  const SizedBox(height: sLarge),
+
+                  /// 🔹 START
+                  TextControllerWidget(
+                    controller: startController,
+                    label: 'Start vertex',
+                    hint: 'e.g. A',
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Please enter start vertex';
+                      }
+
+                      final exists = vertices.any((e) => e.data == v);
+                      if (!exists) {
+                        return 'Vertex "$v" does not exist';
+                      }
+
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: sMedium),
+
+                  /// 🔹 FIND
+                  TextControllerWidget(
+                    controller: findController,
+                    label: 'Find vertex',
+                    hint: 'e.g. D',
+                    validator: (v) {
+                      if (v == null || v.isEmpty) {
+                        return 'Please enter find vertex';
+                      }
+
+                      final exists = vertices.any((e) => e.data == v);
+                      if (!exists) {
+                        return 'Vertex "$v" does not exist';
+                      }
+
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: sLarge),
+
+                  /// 🔹 ACTIONS
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.pop(context),
+                          child: const Text('Cancel'),
+                        ),
+                      ),
+                      const SizedBox(width: sMedium),
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: () {
+                            if (!formKey.currentState!.validate()) return;
+
+                            final startId = startController.text.trim();
+                            final findId = findController.text.trim();
+
+                            final startVertex = vertices.firstWhere(
+                              (v) => v.data == startId,
+                            );
+                            final findVertex = vertices.firstWhere(
+                              (v) => v.data == findId,
+                            );
+
+                            final graphMap = {
+                              for (final v in vertices) v.data: v,
+                            };
+
+                            context.read<DetourBloc>().add(
+                              StartDetour(
+                                start: startVertex,
+                                find: findVertex,
+                                graph: graphMap,
+                              ),
+                            );
+
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Start'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ],
+          ),
         );
       },
     );

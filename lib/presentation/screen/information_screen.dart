@@ -6,6 +6,7 @@ import 'package:discrete_math/core/graph/eulerian/type/eulirian_type.dart';
 import 'package:discrete_math/core/graph/hamiltonian/bloc/hamiltonian_bloc.dart';
 import 'package:discrete_math/core/graph/hamiltonian/event/hamiltonian_event.dart';
 import 'package:discrete_math/core/graph/hamiltonian/state/hamiltonian_state.dart';
+import 'package:discrete_math/presentation/widget/info_card_widget.dart';
 import 'package:discrete_math/presentation/widget/labaled_field_row_children.dart';
 import 'package:discrete_math/presentation/widget/primary_button_widget.dart';
 import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
@@ -46,99 +47,104 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: [
-          BlocBuilder<HamiltonianBloc, HamiltonianState>(
-            builder: (context, state) {
-              if (state is HamiltonianInitial) {
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            BlocBuilder<HamiltonianBloc, HamiltonianState>(
+              builder: (context, state) {
+                if (state is HamiltonianProcessing) {
+                  return const InfoCardWidget(
+                    title: "Hamiltonian",
+                    content: Text("Processing..."),
+                  );
+                }
+
+                if (state is HamiltonianResult) {
+                  return InfoCardWidget(
+                    title: "Hamiltonian",
+                    content: Text(
+                      state.analysis.explanation,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      softWrap: true,
+                    ),
+                  );
+                }
+
                 return const SizedBox.shrink();
-              }
-
-              if (state is HamiltonianProcessing) {
-                return const LabeledFieldRow(
-                  label: "Hamiltonian:",
-                  field: Text("Processing..."),
-                );
-              }
-
-              if (state is HamiltonianResult) {
-                return LabeledFieldRow(
-                  label: "Hamiltonian:",
-                  field: Text(state.analysis.explanation),
-                );
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
-          BlocBuilder<EulerianBloc, EulirianState>(
-            builder: (context, state) {
-              if (state is EulirianInitial) {
-                return const SizedBox.shrink();
-              }
-
-              if (state is EulirianProcessing) {
-                return const LabeledFieldRow(
-                  label: "Hamiltonian:",
-                  field: Text("Processing..."),
-                );
-              }
-
-              if (state is EulirianResult) {
-                if (state.type == EulerianType.none) {
-                  return LabeledFieldRow(
-                    label: "Eulirian:",
-                    field: Text("There is no Eulirian cycle or path"),
-                  );
-                }
-                if (state.type == EulerianType.cycle) {
-                  return LabeledFieldRow(
-                    label: "Eulirian:",
-                    field: Text("There is no Eulirian cycle"),
-                  );
-                }
-                if (state.type == EulerianType.path) {
-                  return LabeledFieldRow(
-                    label: "Eulirian:",
-                    field: Text("There is no Eulirian path"),
-                  );
-                }
-              }
-
-              return const SizedBox.shrink();
-            },
-          ),
-          LabeledFieldRow(
-            label: "Head vertex: ",
-            field: TextControllerWidget(
-              controller: _headController,
-              label: "Head",
-              hint: "First vertext",
-              validator: (v) {
-                final connect = _headController.text;
-                final vertices = ref.read(graphProviderProvider);
-
-                final exists = vertices.any((vertex) => vertex.data == connect);
-
-                if (!exists) {
-                  if (connect.isEmpty) {
-                    return "Please enter name vertex";
-                  }
-                  return 'There is no vertex with name "$connect"';
-                }
-
-                return null;
               },
             ),
-          ),
-          PrimaryButton(
-            text: 'Edit',
-            onPressed: () {
-              _onSubmit();
-            },
-          ),
-        ],
+            const SizedBox(height: 12),
+            BlocBuilder<EulerianBloc, EulirianState>(
+              builder: (context, state) {
+                if (state is EulirianProcessing) {
+                  return const InfoCardWidget(
+                    title: "Eulerian",
+                    content: Text("Processing..."),
+                  );
+                }
+
+                if (state is EulirianResult) {
+                  String text;
+                  switch (state.type) {
+                    case EulerianType.none:
+                      text = "There is no Eulerian cycle or path";
+                      break;
+                    case EulerianType.cycle:
+                      text = "There is an Eulerian cycle";
+                      break;
+                    case EulerianType.path:
+                      text = "There is an Eulerian path";
+                      break;
+                  }
+
+                  return InfoCardWidget(
+                    title: "Eulerian",
+                    content: Text(
+                      text,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                  );
+                }
+
+                return const SizedBox.shrink();
+              },
+            ),
+
+            const SizedBox(height: 16),
+            InfoCardWidget(
+              title: "Head vertex",
+              content: TextControllerWidget(
+                controller: _headController,
+                label: "Head",
+                hint: "First vertex",
+                validator: (v) {
+                  final connect = _headController.text;
+                  final vertices = ref.read(graphProviderProvider);
+
+                  if (connect.isEmpty) {
+                    return "Please enter vertex name";
+                  }
+
+                  final exists = vertices.any(
+                    (vertex) => vertex.data == connect,
+                  );
+
+                  if (!exists) {
+                    return 'There is no vertex "$connect"';
+                  }
+
+                  return null;
+                },
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            PrimaryButton(text: 'Edit', onPressed: _onSubmit),
+          ],
+        ),
       ),
     );
   }
