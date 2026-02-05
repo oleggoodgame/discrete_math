@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class InfoCardWidget extends StatelessWidget {
   final String title;
-  final Widget content;
+  final List<Widget> content;
 
   const InfoCardWidget({super.key, required this.title, required this.content});
 
@@ -21,7 +21,7 @@ class InfoCardWidget extends StatelessWidget {
           children: [
             Text(title, style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            content,
+            ...content,
           ],
         ),
       ),

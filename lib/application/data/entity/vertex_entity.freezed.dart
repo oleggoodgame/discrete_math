@@ -17,7 +17,6 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Vertex {
-  // required String data,
   String get data => throw _privateConstructorUsedError;
   Set<String> get connection => throw _privateConstructorUsedError;
   Offset get offset => throw _privateConstructorUsedError;
@@ -154,7 +153,6 @@ class _$VertexImpl implements _Vertex {
     this.state = VertexState.idle,
   }) : _connection = connection;
 
-  // required String data,
   @override
   final String data;
   final Set<String> _connection;
@@ -206,9 +204,6 @@ class _$VertexImpl implements _Vertex {
   @pragma('vm:prefer-inline')
   _$$VertexImplCopyWith<_$VertexImpl> get copyWith =>
       __$$VertexImplCopyWithImpl<_$VertexImpl>(this, _$identity);
-
-  @override
-  dynamic noSuchMethod(Invocation invocation) => super.noSuchMethod(invocation);
 }
 
 abstract class _Vertex implements Vertex {
@@ -219,7 +214,6 @@ abstract class _Vertex implements Vertex {
     final VertexState state,
   }) = _$VertexImpl;
 
-  // required String data,
   @override
   String get data;
   @override

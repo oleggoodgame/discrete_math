@@ -1,13 +1,16 @@
+import 'package:discrete_math/application/data/entity/graph/graph_entity.dart';
+import 'package:discrete_math/application/data/style/primary_button_style.dart';
+import 'package:discrete_math/application/data/style/theme_style.dart';
 import 'package:discrete_math/application/provider/graph_provider.dart';
 import 'package:discrete_math/core/graph/eulerian/bloc/eulirian_bloc.dart';
 import 'package:discrete_math/core/graph/eulerian/event/eulirian_event.dart';
 import 'package:discrete_math/core/graph/eulerian/state/eulirian_state.dart';
 import 'package:discrete_math/core/graph/eulerian/type/eulirian_type.dart';
+import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
 import 'package:discrete_math/core/graph/hamiltonian/bloc/hamiltonian_bloc.dart';
 import 'package:discrete_math/core/graph/hamiltonian/event/hamiltonian_event.dart';
 import 'package:discrete_math/core/graph/hamiltonian/state/hamiltonian_state.dart';
 import 'package:discrete_math/presentation/widget/info_card_widget.dart';
-import 'package:discrete_math/presentation/widget/labaled_field_row_children.dart';
 import 'package:discrete_math/presentation/widget/primary_button_widget.dart';
 import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
 import 'package:flutter/material.dart';
@@ -16,8 +19,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 class InformationScreen extends ConsumerStatefulWidget {
-  const InformationScreen({super.key});
-
+  const InformationScreen({required this.graph, super.key});
+  final GraphEntity graph;
   @override
   ConsumerState<InformationScreen> createState() => _InformationScreenState();
 }
@@ -57,18 +60,20 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
                 if (state is HamiltonianProcessing) {
                   return const InfoCardWidget(
                     title: "Hamiltonian",
-                    content: Text("Processing..."),
+                    content: [Text("Processing...")],
                   );
                 }
 
                 if (state is HamiltonianResult) {
                   return InfoCardWidget(
                     title: "Hamiltonian",
-                    content: Text(
-                      state.analysis.explanation,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      softWrap: true,
-                    ),
+                    content: [
+                      Text(
+                        state.analysis.explanation,
+                        style: Theme.of(context).textTheme.bodyMedium,
+                        softWrap: true,
+                      ),
+                    ],
                   );
                 }
 
@@ -81,7 +86,7 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
                 if (state is EulirianProcessing) {
                   return const InfoCardWidget(
                     title: "Eulerian",
-                    content: Text("Processing..."),
+                    content: [Text("Processing...")],
                   );
                 }
 
@@ -101,10 +106,9 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
 
                   return InfoCardWidget(
                     title: "Eulerian",
-                    content: Text(
-                      text,
-                      style: Theme.of(context).textTheme.bodyMedium,
-                    ),
+                    content: [
+                      Text(text, style: Theme.of(context).textTheme.bodyMedium),
+                    ],
                   );
                 }
 
@@ -115,41 +119,57 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
             const SizedBox(height: 16),
             InfoCardWidget(
               title: "Head vertex",
-              content: TextControllerWidget(
-                controller: _headController,
-                label: "Head",
-                hint: "First vertex",
-                validator: (v) {
-                  final connect = _headController.text;
-                  final vertices = ref.read(graphProviderProvider);
+              content: [
+                TextControllerWidget(
+                  controller: _headController,
+                  label: "Head",
+                  hint: "First vertex",
+                  validator: (v) {
+                    final connect = _headController.text;
+                    final vertices = ref.read(graphProviderProvider);
 
-                  if (connect.isEmpty) {
-                    return "Please enter vertex name";
-                  }
+                    if (connect.isEmpty) {
+                      return "Please enter vertex name";
+                    }
 
-                  final exists = vertices.any(
-                    (vertex) => vertex.data == connect,
-                  );
+                    final exists = vertices.any(
+                      (vertex) => vertex.data == connect,
+                    );
 
-                  if (!exists) {
-                    return 'There is no vertex "$connect"';
-                  }
+                    if (!exists) {
+                      return 'There is no vertex "$connect"';
+                    }
 
-                  return null;
-                },
-              ),
+                    return null;
+                  },
+                ),
+                const SizedBox(height: sMedium),
+                PrimaryButton(text: 'Edit', onPressed: _onEdit),
+              ],
             ),
 
             const SizedBox(height: 20),
-
-            PrimaryButton(text: 'Edit', onPressed: _onSubmit),
+            InfoCardWidget(
+              title: "Remove your Graph",
+              content: [
+                PrimaryButton(
+                  text: 'Delete',
+                  onPressed: _onDelete,
+                  style: PrimaryButtonStyle(
+                    backgroundColor: Colors.red,
+                    borderRadius: 16,
+                    elevation: 4,
+                  ),
+                ),
+              ],
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _onSubmit() {
+  void _onEdit() {
     final connect = _headController.text;
 
     final vertices = ref.read(graphProviderProvider);
@@ -159,5 +179,10 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
 
     notifier.setHead(newVertex);
     context.pop();
+  }
+
+  void _onDelete() async {
+    context.read<GraphsCubit>().deleteGraph(widget.graph);
+    context.go("/graphs");
   }
 }

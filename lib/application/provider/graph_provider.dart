@@ -30,6 +30,8 @@ class GraphProvider extends _$GraphProvider {
     // };
   }
 
+  Set<Vertex>? _snapshot;
+
   void addVertex(Vertex vertex) {
     for (final i in vertex.connection) {
       connectVertices(vertex.data, i);
@@ -131,5 +133,17 @@ class GraphProvider extends _$GraphProvider {
     state = vertices;
   }
 
+  void takeSnapshot() {
+    _snapshot = state.map((v) => v.copyWith()).toSet();
+  }
+
+  void restoreSnapshot() {
+    if (_snapshot != null) {
+      state = _snapshot!;
+      _snapshot = null;
+    }
+  }
+
+  bool get isAlgorithmRunning => state.any((v) => v.state != VertexState.idle);
   // Vertex find(String neighbor) {}
 }

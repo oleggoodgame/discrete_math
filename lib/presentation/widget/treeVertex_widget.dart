@@ -18,6 +18,7 @@ class TreeVertexWidget extends ConsumerWidget {
     final connectState = ref.watch(connectVertexProvider);
     final connectNotifier = ref.read(connectVertexProvider.notifier);
     final graphNotifier = ref.read(graphProviderProvider.notifier);
+    final fifi = Theme.of(context).brightness == Brightness.light;
 
     final isMenuOpen = selected?.data == vertex.data;
     final isConnecting = connectState != null;
@@ -45,11 +46,11 @@ class TreeVertexWidget extends ConsumerWidget {
           height: 50,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.white,
+            color: fifi ? Colors.white : Colors.grey.shade400,
             border: Border.all(color: Colors.black, width: 4),
           ),
           alignment: Alignment.center,
-          child: Text(vertex.data),
+          child: Text(vertex.data, style: TextStyle(color: Colors.black)),
         ),
       ),
     );

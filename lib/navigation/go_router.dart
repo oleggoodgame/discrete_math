@@ -1,12 +1,17 @@
 import 'package:discrete_math/application/data/entity/graph/graph_entity.dart';
 import 'package:discrete_math/application/provider/auth_state_provider.dart';
 import 'package:discrete_math/application/data/entity/vertex_entity.dart';
+import 'package:discrete_math/presentation/screen/app_info_screen.dart';
 import 'package:discrete_math/presentation/screen/authentication/login_screen.dart';
 import 'package:discrete_math/presentation/screen/authentication/signup_screen.dart';
 import 'package:discrete_math/presentation/screen/edit_vertex_screen.dart';
 import 'package:discrete_math/presentation/screen/editor_screen.dart';
+import 'package:discrete_math/presentation/screen/favorite_screen.dart';
 import 'package:discrete_math/presentation/screen/graphs_screen.dart';
 import 'package:discrete_math/presentation/screen/information_screen.dart';
+import 'package:discrete_math/presentation/screen/more_screen.dart';
+import 'package:discrete_math/presentation/screen/settings_screen.dart';
+import 'package:discrete_math/presentation/widget/main_%20shell_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -47,12 +52,12 @@ final routerProvider = Provider<GoRouter>((ref) {
           return SignupScreen();
         },
       ),
-      GoRoute(
-        path: '/graphs',
-        builder: (context, state) {
-          return GraphsScreen();
-        },
-      ),
+      // GoRoute(
+      //   path: '/graphs',
+      //   builder: (context, state) {
+      //     return GraphsScreen();
+      //   },
+      // ),
       GoRoute(
         path: '/editor',
         builder: (context, state) {
@@ -74,10 +79,60 @@ final routerProvider = Provider<GoRouter>((ref) {
         },
       ),
       GoRoute(
+        path: '/favorites',
+        builder: (context, state) {
+          return FavoriteScreen();
+        },
+      ),
+      GoRoute(
+        path: '/app_info',
+        builder: (context, state) => const AppInfoScreen(),
+      ),
+      GoRoute(
         path: '/information_screen',
         builder: (context, state) {
-          return InformationScreen();
+          final graph = state.extra as GraphEntity;
+          return InformationScreen(graph: graph);
         },
+      ),
+      StatefulShellRoute.indexedStack(
+        builder: (context, state, navigationShell) {
+          return MainShellWidget(navigationShell: navigationShell);
+        },
+        branches: [
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/graphs',
+                builder: (context, state) => GraphsScreen(),
+              ),
+            ],
+          ),
+          // StatefulShellBranch(
+          //   routes: [
+          //     GoRoute(
+          //       path: '/favorites',
+          //       builder: (context, state) => FavoritesScreen(),
+          //     ),
+          //   ],
+          // ),
+          StatefulShellBranch(
+            routes: [
+              GoRoute(
+                path: '/settings',
+                builder: (context, state) => SettingsScreen(),
+                routes: [
+                  GoRoute(
+                    path: '/more',
+                    builder: (context, state) {
+                      return MoreScreen();
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
       ),
     ],
   );

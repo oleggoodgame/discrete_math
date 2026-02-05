@@ -1,11 +1,11 @@
 import 'package:discrete_math/application/data/entity/vertex_entity.dart';
 import 'package:discrete_math/application/data/style/theme_style.dart';
-import 'package:discrete_math/core/graph/edit/bloc/edit_bloc.dart';
+import 'package:discrete_math/core/graph/edit/cubit/edit_bloc.dart';
+import 'package:discrete_math/core/graph/favorite/cubit/favorite_cubit.dart';
 import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
 import 'package:discrete_math/presentation/widget/list_graphs_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class GraphsScreen extends StatefulWidget {
   const GraphsScreen({super.key});
@@ -19,6 +19,7 @@ class _GraphsScreenState extends State<GraphsScreen> {
   void initState() {
     super.initState();
     context.read<GraphsCubit>().loadGraphs();
+    context.read<FavoriteCubit>().load();
   }
 
   @override
@@ -34,7 +35,7 @@ class _GraphsScreenState extends State<GraphsScreen> {
 
               if (title == null) return;
               await context.read<EditCubit>().createGraph(
-                title: "Aboba",
+                title: title,
                 data: {
                   Vertex(
                     data: 'A',
@@ -114,7 +115,7 @@ class _GraphsScreenState extends State<GraphsScreen> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(dialogContext, null);
+                            Navigator.pop(dialogContext, null);// це 
                           },
                           child: const Text('Cancel'),
                         ),
@@ -130,7 +131,7 @@ class _GraphsScreenState extends State<GraphsScreen> {
                             Navigator.pop(
                               dialogContext,
                               titleController.text.trim(),
-                            );
+                            );// це також 
                           },
                           child: const Text('OK'),
                         ),
@@ -145,7 +146,6 @@ class _GraphsScreenState extends State<GraphsScreen> {
       },
     );
 
-    titleController.dispose();
     return result;
   }
 }

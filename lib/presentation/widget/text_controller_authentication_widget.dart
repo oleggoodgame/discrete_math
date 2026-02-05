@@ -24,7 +24,8 @@ class TextControllerAuthenticationWidget extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final obscure = ref.watch(obscureProvider);
-
+    final fifi = Theme.of(context).brightness == Brightness.light;
+    print(fifi);
     return SizedBox(
       width: fieldWidth,
       child: TextFormField(
@@ -33,8 +34,12 @@ class TextControllerAuthenticationWidget extends ConsumerWidget {
         validator: validator,
         obscureText: password ? obscure : false,
         decoration: password
-            ? _inputDecorationPassword(ref)
-            : _inputDecoration(),
+            ? fifi
+                  ? _inputDecorationPassword(ref)
+                  : _inputDecorationPasswordDark(ref)
+            : fifi
+            ? _inputDecoration()
+            : _inputDecorationDark(),
       ),
     );
   }
@@ -81,6 +86,65 @@ class TextControllerAuthenticationWidget extends ConsumerWidget {
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(color: Colors.blue, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+      suffixIcon: IconButton(
+        icon: Icon(obscure ? Icons.visibility_off : Icons.visibility),
+        onPressed: () {
+          ref.read(obscureProvider.notifier).state = !obscure;
+        },
+      ),
+    );
+  }
+
+  InputDecoration _inputDecorationDark() {
+    return InputDecoration(
+      focusColor: Colors.black,
+      labelText: label,
+      labelStyle: TextStyle(color: Colors.white70),
+      hintText: hint,
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
+      filled: true,
+      fillColor: Colors.grey.shade600,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade800),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
+      ),
+      errorBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.red),
+      ),
+    );
+  }
+
+  InputDecoration _inputDecorationPasswordDark(WidgetRef ref) {
+    final obscure = ref.read(obscureProvider);
+
+    return InputDecoration(
+      labelText: label,
+      hintText: hint,
+      labelStyle: TextStyle(color: Colors.white70),
+      floatingLabelBehavior: FloatingLabelBehavior.auto,
+      filled: true,
+      fillColor: Colors.grey.shade600,
+      contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: BorderSide(color: Colors.grey.shade800),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(12),
+        borderSide: const BorderSide(color: Colors.blueAccent, width: 2),
       ),
       errorBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),

@@ -2,7 +2,16 @@ import 'package:flutter/material.dart';
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
+  scaffoldBackgroundColor: const Color(0xFFF5F6FA),
+  canvasColor: Colors.white,
 
+  colorScheme: const ColorScheme.light(
+    primary: Colors.indigo,
+    secondary: Colors.indigoAccent,
+    surface: Colors.white,
+    onPrimary: Colors.white,
+    onSurface: Colors.black87,
+  ),
   textTheme: const TextTheme(
     titleLarge: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
     titleMedium: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),

@@ -19,6 +19,9 @@ dependencies:
   go_router: ^17.0.0
   riverpod_annotation: ^2.6.1
   json_annotation: ^4.9.0
+  connectivity_plus: ^7.0.0
+  url_launcher: ^6.3.2
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -30,3 +33,7 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  # assets:
+  #   - assets/images/graph_hero.png
+  #   - assets/images/bfs.png
+  #   - assets/images/dfs.png

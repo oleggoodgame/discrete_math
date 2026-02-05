@@ -21,7 +21,7 @@ class BfsBloc extends Bloc<GraphEvent, GraphState> {
         emit(GraphResult(step));
       }
 
-      await Future.delayed(const Duration(seconds: 10));
+      await Future.delayed(const Duration(seconds: 5));
       print("reset");
       final reset = event.graph.values
           .map((v) => v.copyWith(state: VertexState.idle))

@@ -1,15 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:discrete_math/application/data/entity/graph/graph_entity.dart';
 import 'package:discrete_math/application/data/entity/vertex_entity.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class EditService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-
+  final User _auth = FirebaseAuth.instance.currentUser!;
   Future<GraphEntity> createGraph({
     required String title,
     required Set<Vertex> data,
   }) async {
-    final docRef = _db.collection('graphs').doc();
+    final docRef = _db.collection('accounts').doc(_auth.uid).collection("graphs").doc();
 
     final graph = GraphEntity(
       id: docRef.id,
@@ -19,7 +20,7 @@ class EditService {
     );
 
     await docRef.set(graph.toMap());
-    print("CREATED");
+    // print("CREATED");
     return graph;
   }
 
@@ -27,7 +28,7 @@ class EditService {
     required Set<Vertex> data,
     required String id,
   }) async {
-    final docRef = _db.collection('graphs').doc(id);
+    final docRef = _db.collection('accounts').doc(_auth.uid).collection("graphs").doc(id);
     await docRef.update({
       'data': data
           .map((v) => v.toMap())

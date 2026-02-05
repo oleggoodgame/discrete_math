@@ -1,54 +1,71 @@
-import 'package:discrete_math/application/provider/graph_provider.dart';
+import 'package:discrete_math/application/provider/favorite_provider.dart';
+import 'package:discrete_math/core/graph/favorite/cubit/favorite_cubit.dart';
+import 'package:discrete_math/core/graph/favorite/state/favorite_state.dart';
 import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
 import 'package:discrete_math/core/graph/graphs/state/graphs_state.dart';
+import 'package:discrete_math/presentation/widget/graph_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
 
 class ListGraphsWidget extends ConsumerWidget {
   const ListGraphsWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return BlocBuilder<GraphsCubit, GraphsState>(
-      builder: (context, state) {
-        if (state is GraphsLoading) {
-          print("Loading");
+    final favorites = ref.watch(favoriteProviderProvider);
+    // final favoriteNotifier = ref.watch(favoriteProviderProvider.notifier);
 
-          return const Center(child: CircularProgressIndicator());
+    return BlocListener<FavoriteCubit, FavoriteState>(
+      listener: (context, state) {
+        if (state is FavoriteLoaded) {
+          ref.read(favoriteProviderProvider.notifier).setAll(state.ids);
         }
-        if (state is GraphsError) {
-          print(state.message);
-          return const Center(child: Text("ERROR"));
-        }
-        if (state is GraphsLoaded) {
-          print("LOADED");
-          // print(state.graphs.length);
-          // print(state.graphs.first);
-          return ListView.builder(
-            itemCount: state.graphs.length,
-            itemBuilder: (context, index) {
-              final graph = state.graphs[index];
-              print("BUIDED");
-              return GestureDetector(
-                onTap: () {
-                  ref
-                      .watch(graphProviderProvider.notifier)
-                      .setVertices(graph.data);
-                  context.push('/editor', extra: graph);
+      },
+      child: BlocBuilder<GraphsCubit, GraphsState>(
+        builder: (context, state) {
+          if (state is GraphsLoading) {
+            print("Loading");
+
+            return const Center(child: CircularProgressIndicator());
+          }
+          if (state is GraphsError) {
+            print(state.message);
+            return const Center(child: Text("ERROR"));
+          }
+          if (state is GraphsLoaded) {
+            print("LOADED");
+            // print(state.graphs.length);
+            // print(state.graphs.first);
+            if (state.graphs.length != 0) {
+              return ListView.builder(
+                itemCount: state.graphs.length,
+                itemBuilder: (context, index) {
+                  final graph = state.graphs[index];
+
+                  final isFavorite = favorites.any((id) => id == graph.id);
+
+                  return GraphWidget(isFavorite: isFavorite, graph: graph);
                 },
-                child: ListTile(
-                  title: Text(graph.title),
-                  subtitle: Text(graph.createdAt.toLocal().toString()),
+              );
+            } else {
+              return Center(
+                child: Text(
+                  "There is no graphs",
+                  style: Theme.of(context).textTheme.titleLarge,
                 ),
               );
-            },
-          );
-        }
+            }
+          }
 
-        return const Center(child: Text("There is no graphs"));
-      },
+          return Center(
+            child: Text(
+              "There is no graphs",
+              style: Theme.of(context).textTheme.titleLarge,
+            ),
+          );
+        },
+      ),
     );
   }
 }

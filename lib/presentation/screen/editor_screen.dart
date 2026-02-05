@@ -11,7 +11,7 @@ import 'package:discrete_math/core/graph/dfs/bloc/bloc_dfs.dart';
 import 'package:discrete_math/application/data/entity/graph/event/graph_event.dart';
 import 'package:discrete_math/application/data/entity/graph/state/graph_state.dart';
 import 'package:discrete_math/application/data/entity/vertex_entity.dart';
-import 'package:discrete_math/core/graph/edit/bloc/edit_bloc.dart';
+import 'package:discrete_math/core/graph/edit/cubit/edit_bloc.dart';
 import 'package:discrete_math/core/graph/graphs/bloc/graphs_bloc.dart';
 import 'package:discrete_math/presentation/painter/graph_painer.dart';
 import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
@@ -100,6 +100,8 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final vertices = ref.watch(graphProviderProvider);
     final selectedVertex = ref.watch(selectedVertexProvider);
     final isFabOpen = ref.watch(fabMenuOpenProvider);
+    final fifi = Theme.of(context).brightness == Brightness.light;
+    final notifier = ref.read(graphProviderProvider.notifier);
 
     return MultiBlocListener(
       listeners: [
@@ -140,6 +142,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       ],
       child: PopScope(
         onPopInvokedWithResult: (didPop, result) {
+          if (notifier.isAlgorithmRunning) {
+            notifier.restoreSnapshot();
+          }
+
           context.read<EditCubit>().editGraph(
             data: ref.read(graphProviderProvider),
             id: widget.graph.id,
@@ -184,7 +190,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                     width: canvasSize,
                     height: canvasSize,
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: fifi ? Colors.white : Colors.grey.shade400,
                       border: Border.all(color: Colors.black, width: 3),
                     ),
                     child: Stack(
@@ -221,9 +227,12 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                     children: [
                       _FabMenuItem(
                         icon: Icons.timeline,
-                        label: 'Обхід',
+                        label: 'path',
                         onTap: () {
                           final vertices = ref.read(graphProviderProvider);
+                          ref
+                              .read(graphProviderProvider.notifier)
+                              .takeSnapshot();
 
                           _showDetourDialog(context, vertices);
                         },
@@ -236,6 +245,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                           final graphMap = {
                             for (final v in vertices) v.data: v,
                           };
+                          ref
+                              .read(graphProviderProvider.notifier)
+                              .takeSnapshot();
+
                           context.read<DfsBloc>().add(
                             StartGraph(start: vertices.first, graph: graphMap),
                           );
@@ -249,6 +262,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                           final graphMap = {
                             for (final v in vertices) v.data: v,
                           };
+                          ref
+                              .read(graphProviderProvider.notifier)
+                              .takeSnapshot();
+
                           context.read<BfsBloc>().add(
                             StartGraph(start: vertices.first, graph: graphMap),
                           );
@@ -257,7 +274,10 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                       _FabMenuItem(
                         icon: Icons.info_outline,
                         label: 'Information',
-                        onTap: () => context.push('/information_screen'),
+                        onTap: () => context.push(
+                          '/information_screen',
+                          extra: widget.graph,
+                        ),
                       ),
                       _FabMenuItem(
                         icon: Icons.add_circle_outline,
@@ -309,7 +329,6 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  /// 🔹 TITLE
                   Text(
                     'Path between vertices',
                     style: Theme.of(context).textTheme.titleMedium,
@@ -317,8 +336,6 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                   ),
 
                   const SizedBox(height: sLarge),
-
-                  /// 🔹 START
                   TextControllerWidget(
                     controller: startController,
                     label: 'Start vertex',
@@ -338,8 +355,6 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                   ),
 
                   const SizedBox(height: sMedium),
-
-                  /// 🔹 FIND
                   TextControllerWidget(
                     controller: findController,
                     label: 'Find vertex',
@@ -359,8 +374,6 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                   ),
 
                   const SizedBox(height: sLarge),
-
-                  /// 🔹 ACTIONS
                   Row(
                     children: [
                       Expanded(

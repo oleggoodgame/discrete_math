@@ -1,17 +1,25 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginService {
-  void login(String email, String password) async {
-    final user = await FirebaseAuth.instance.signInWithEmailAndPassword(
+  Future<User> login(String email, String password) async {
+    final credential =
+        await FirebaseAuth.instance.signInWithEmailAndPassword(
       email: email,
       password: password,
     );
-    if (user.user == null) {
-      throw Exception("Bad email or password, please review!");
+
+    if (credential.user == null) {
+      throw FirebaseAuthException(
+        code: 'unknown',
+        message: 'Bad email or password',
+      );
     }
+
+    return credential.user!;
   }
 
-  void logout() async {
+  Future<void> logout() async {
     await FirebaseAuth.instance.signOut();
   }
 }
+
