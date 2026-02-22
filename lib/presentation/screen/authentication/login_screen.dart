@@ -1,4 +1,6 @@
 import 'package:discrete_math/application/data/style/theme_style.dart';
+import 'package:discrete_math/core/auth/auth/bloc/auth_bloc.dart';
+import 'package:discrete_math/core/auth/auth/event/auth_event.dart';
 import 'package:discrete_math/core/auth/login/bloc/login_bloc.dart';
 import 'package:discrete_math/core/auth/login/event/login_event.dart';
 import 'package:discrete_math/core/auth/state/auth_state.dart';
@@ -69,7 +71,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     children: [
                       const SizedBox(height: sLarge),
                       Text(
-                        'Discrete Math',
+                        'Graph Explorer',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleLarge?.copyWith(
                           fontSize: 26,
@@ -78,7 +80,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       ),
                       const SizedBox(height: sSmall),
                       Text(
-                        'Think in logic, not formulas',
+                        'Watch live in logic, not formulas',
                         textAlign: TextAlign.center,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                           color: Colors.grey[600],
@@ -160,6 +162,48 @@ class _LoginScreenState extends State<LoginScreen> {
                           );
                         },
                       ),
+                      const SizedBox(height: sSmall),
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          final isLoading = state is AuthLoading;
+                          return SizedBox(
+                            height: 52,
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () => _onGooglePressed(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                foregroundColor: Colors.indigoAccent,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(
+                                    color: Colors.grey,
+                                    width: 2,
+                                  ),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              child: isLoading
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                  : const Text('SIGN IN WITH GOOGLE'),
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                   Padding(
@@ -188,5 +232,9 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
+  }
+
+  void _onGooglePressed(BuildContext context) async {
+    context.read<AuthBloc>().add(AuthStart());
   }
 }

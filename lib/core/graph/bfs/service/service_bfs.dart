@@ -9,28 +9,28 @@ class BfsService {
   }) async* {
     final queue = Queue<Vertex>();
     final visited = <Vertex>{};
-    print(graph.toString());
+    final seen = <String>{};
+    // print(graph.toString());
     // print("Start $start");
     queue.add(start);
+    seen.add(start.data); 
+
     // visited.add(start);
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
-      // print("Queue: $queue");
-      // print("Current: $current");
+      print("Queue: $queue \n");
+      print("Current: $current \n");
       final visiting = current.copyWith(state: VertexState.visiting);
       visited.add(visiting);
 
-      yield {...visited}; 
+      yield {...visited};
       await Future.delayed(const Duration(milliseconds: 300));
       // print("Visited: $visited");
       for (final id in current.connection) {
         final neighbor = graph[id];
-        final fifi = visited.where((v)=>v.data==id).toSet();
-        // print("FIFI: $fifi");
-        if (neighbor != null && fifi.isEmpty) {
-          // print(visited.any((v) => v.data != neighbor.data));
-          // print("ID: $id");
+        if (neighbor != null && !seen.contains(id)) {
           queue.add(neighbor);
+          seen.add(id); 
         }
       }
 
@@ -38,7 +38,7 @@ class BfsService {
       visited
         ..remove(visiting)
         ..add(done);
-      // print("END: $visited");
+      print("END: $visited");
       yield {...visited};
       await Future.delayed(const Duration(milliseconds: 300));
     }

@@ -1,6 +1,12 @@
 import 'package:discrete_math/application/data/entity/graph/graph_entity.dart';
 import 'package:discrete_math/application/provider/auth_state_provider.dart';
 import 'package:discrete_math/application/data/entity/vertex_entity.dart';
+import 'package:discrete_math/core/graph/bfs/bloc/bloc_bfs.dart';
+import 'package:discrete_math/core/graph/bfs/service/service_bfs.dart';
+import 'package:discrete_math/core/graph/detour/bloc/detour_bloc.dart';
+import 'package:discrete_math/core/graph/detour/service/detour_service.dart';
+import 'package:discrete_math/core/graph/dfs/bloc/bloc_dfs.dart';
+import 'package:discrete_math/core/graph/dfs/service/service_dfs.dart';
 import 'package:discrete_math/presentation/screen/app_info_screen.dart';
 import 'package:discrete_math/presentation/screen/authentication/login_screen.dart';
 import 'package:discrete_math/presentation/screen/authentication/signup_screen.dart';
@@ -13,6 +19,7 @@ import 'package:discrete_math/presentation/screen/more_screen.dart';
 import 'package:discrete_math/presentation/screen/settings_screen.dart';
 import 'package:discrete_math/presentation/widget/main_%20shell_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
@@ -62,7 +69,15 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/editor',
         builder: (context, state) {
           final graph = state.extra as GraphEntity;
-          return EditorScreen(graph: graph);
+
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(create: (_) => DfsBloc(service: DfsService())),
+              BlocProvider(create: (_) => BfsBloc(service: BfsService())),
+              BlocProvider(create: (_) => DetourBloc(service: DetourService())),
+            ],
+            child: EditorScreen(graph: graph),
+          );
         },
       ),
       GoRoute(

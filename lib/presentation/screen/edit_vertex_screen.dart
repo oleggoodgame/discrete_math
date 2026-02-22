@@ -29,10 +29,10 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
       final vertex = widget.vertex!;
       _nameController = TextEditingController(text: vertex.data);
       _offSetXController = TextEditingController(
-        text: vertex.offset.dx.toString(),
+        text: vertex.offset.dx.toString().substring(0,7),
       );
       _offSetYController = TextEditingController(
-        text: vertex.offset.dy.toString(),
+        text: vertex.offset.dy.toString().substring(0,7),
       );
       _connectController = TextEditingController(
         text: vertex.connection.join(' '),
@@ -70,15 +70,18 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
                 label: 'data',
                 hint: 'Enter name, less than 4 characters',
                 validator: (v) {
-                  if (ref
-                      .read(graphProviderProvider)
-                      .where((vertex) => vertex.data == v)
-                      .isNotEmpty) {
+                  final vertices = ref.read(graphProviderProvider);
+                  final exists = vertices.any(
+                    (vertex) => vertex.data == v && vertex != widget.vertex,
+                  );
+                  print(exists);
+                  if (exists) {
                     return 'There already this name';
                   }
                   if (v != null && v.length >= 4) {
                     return 'Name must be less than 4 characters';
                   }
+
                   return null;
                 },
               ),
@@ -169,8 +172,10 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
   void _onSubmit(bool fifi) {
     if (!_formKey.currentState!.validate()) return;
 
-    final connect = _connectController.text.split(' ').toSet();
-
+    final connect = _connectController.text
+        .split(RegExp(r'[\s,]+'))
+        .where((e) => e.isNotEmpty)
+        .toSet();
     final vertex = Vertex(
       data: _nameController.text,
       offset: Offset(
@@ -180,7 +185,9 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
       connection: connect,
     );
     if (fifi == true) {
-      ref.read(graphProviderProvider.notifier).editVertex(vertex);
+      ref
+          .read(graphProviderProvider.notifier)
+          .editVertex(vertex, widget.vertex!);
     } else {
       ref.read(graphProviderProvider.notifier).addVertex(vertex);
     }

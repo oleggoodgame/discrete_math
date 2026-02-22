@@ -142,15 +142,19 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
       ],
       child: PopScope(
         onPopInvokedWithResult: (didPop, result) {
+          print("START RESTORED \n\n");
           if (notifier.isAlgorithmRunning) {
             notifier.restoreSnapshot();
+            print("Restored\n\n\n\n");
           }
 
           context.read<EditCubit>().editGraph(
             data: ref.read(graphProviderProvider),
             id: widget.graph.id,
           );
+          print("After edit\n\n\n");
           context.read<GraphsCubit>().loadGraphs();
+          print("Loadedededed GRAPHS\n\n");
         },
         child: Scaffold(
           appBar: AppBar(
@@ -221,13 +225,13 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
               if (isFabOpen) // Можливо тут треба буде додати перевірку екрану щоб гарно виходило
                 Positioned(
                   right: 16,
-                  bottom: 90,
+                  bottom: 88,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       _FabMenuItem(
                         icon: Icons.timeline,
-                        label: 'path',
+                        label: 'Path',
                         onTap: () {
                           final vertices = ref.read(graphProviderProvider);
                           ref

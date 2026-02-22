@@ -1,6 +1,6 @@
 name: discrete_math
 description: "A new Flutter project."
-publish_to: 'none'
+publish_to: "none"
 version: 0.1.0
 
 environment:
@@ -22,18 +22,24 @@ dependencies:
   connectivity_plus: ^7.0.0
   url_launcher: ^6.3.2
   shared_preferences: ^2.5.3
+  google_sign_in: ^7.2.0
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
+  flutter_launcher_icons: ^0.13.1
   flutter_lints: ^5.0.0
   riverpod_generator: ^2.6.1
   json_serializable: ^6.7.1
   build_runner: ^2.5.4
 
+flutter_icons:
+  android: true
+  ios: true
+  image_path: "asset/image/logo.png"
 flutter:
   uses-material-design: true
-  # assets:
-  #   - assets/images/graph_hero.png
-  #   - assets/images/bfs.png
-  #   - assets/images/dfs.png
+  assets:
+    # - assets/images/graph_hero.png
+    - asset/image/image.png
+    - asset/image/vis.png

@@ -65,29 +65,28 @@ class GraphProvider extends _$GraphProvider {
   }
 
   void connectVertices(String a, String b) {
-    if (a == b) return;
-    // final List<Vertex> newList = [];
-    // for (final v in state) {
-    //   if (v.data == a) {
-    //     v.connection.contains(b)
-    //         ? v.copyWith(connection: v.connection.where((w) => w != b).toList())
-    //         : v.copyWith(connection: [...v.connection, b]);
-    //     print("WORK ON a ");
-    //     print(v);
+    print("\n=== connectVertices CALLED ===");
+    print("$a, $b");
 
-    //     newList.add(v);
-    //   }
-    //   if (v.data == b) {
-    //     v.connection.contains(a)
-    //         ? v.copyWith(connection: v.connection.where((w) => w != a).toList())
-    //         : v.copyWith(connection: [...v.connection, a]);
-    //     print("WORK ON b ");
-    //     print(v);
+    if (a == b) {
+      print("❌ Same vertex, skip");
+      return;
+    }
 
-    //     newList.add(v);
-    //   } else
-    //     newList.add(v);
-    // }
+    print("State BEFORE:");
+    for (final v in state) {
+      print("  ${v.data} -> ${v.connection}");
+    }
+    for (final v in state) {
+      print("$v: ${v.connection}");
+      if (v.connection.isEmpty) {
+        print("Одне встав ");
+      }
+      if (v.data == a)
+        v.connection.contains(b)
+            ? print(v.connection.where((w) => w != b).toSet())
+            : print({...v.connection, b});
+    }
     state = {
       for (final v in state)
         if (v.data == a)
@@ -105,28 +104,50 @@ class GraphProvider extends _$GraphProvider {
         else
           v,
     };
-    // state = newList;
+    print("State AFTER:");
+    for (final v in state) {
+      print("  ${v.data} -> ${v.connection}");
+    }
+
+    print("=== connectVertices END ===\n");
   }
 
-  void editVertex(Vertex updated) {
-    final old = state.firstWhere((v) => v.data == updated.data);
+  void editVertex(Vertex updated, Vertex oldOne) {
+    // {F} // {F, K}
+    // {F, K} // {F}
+    print("W");
+    if (oldOne.connection.length < updated.connection.length) {
+      print("FIRST");
+      final newOne = updated.connection.difference(oldOne.connection);
+      print(newOne);
 
-    final removed = old.connection.difference(updated.connection);
-    final added = updated.connection.difference(old.connection);
+      for (final i in newOne) {
+        connectVertices(updated.data, i);
+      }
+    } else if (oldOne.connection.length == updated.connection.length) {
+      final newOne = updated.connection.difference(oldOne.connection);
+      final newOther = oldOne.connection.difference(updated.connection);
+      newOther.addAll(newOne);
+      print("AAAAAAAAAAAAAAAAAAAAAAA");
+      print(updated.connection);
+      print(oldOne.connection);
 
-    state = {
-      for (final v in state)
-        if (v.data == updated.data)
-          updated
-        else if (removed.contains(v.data))
-          v.copyWith(
-            connection: v.connection.where((c) => c != updated.data).toSet(),
-          )
-        else if (added.contains(v.data))
-          v.copyWith(connection: {...v.connection, updated.data})
-        else
-          v,
-    };
+      print(newOther);
+
+      for (final i in newOther) {
+        print("WORKED WITH ${updated.data} | $i");
+        connectVertices(updated.data, i);
+      }
+    } else {
+      print("SECOND");
+
+      final newOne = oldOne.connection.difference(updated.connection);
+
+      print(newOne);
+      for (final i in newOne) {
+        connectVertices(updated.data, i);
+      }
+    }
   }
 
   void setVertices(Set<Vertex> vertices) {

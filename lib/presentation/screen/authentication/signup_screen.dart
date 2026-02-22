@@ -1,4 +1,6 @@
 import 'package:discrete_math/application/data/style/theme_style.dart';
+import 'package:discrete_math/core/auth/auth/bloc/auth_bloc.dart';
+import 'package:discrete_math/core/auth/auth/event/auth_event.dart';
 import 'package:discrete_math/core/auth/signup/bloc/signup_bloc.dart';
 import 'package:discrete_math/core/auth/signup/event/signup_event.dart';
 import 'package:discrete_math/core/auth/state/auth_state.dart';
@@ -149,6 +151,48 @@ class _SignupScreenState extends State<SignupScreen> {
                           );
                         },
                       ),
+                      const SizedBox(height: sSmall),
+                      BlocBuilder<AuthBloc, AuthState>(
+                        builder: (context, state) {
+                          final isLoading = state is AuthLoading;
+                          return SizedBox(
+                            height: 52,
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: isLoading
+                                  ? null
+                                  : () => _onGooglePressed(context),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.transparent,
+                                foregroundColor: Colors.indigoAccent,
+                                elevation: 0,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                  side: BorderSide(
+                                    color: Colors.grey,
+                                    width: 2,
+                                  ),
+                                ),
+                                textStyle: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w600,
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              child: isLoading
+                                  ? const SizedBox(
+                                      width: 22,
+                                      height: 22,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        color: Colors.black,
+                                      ),
+                                    )
+                                  : const Text('SIGN IN WITH GOOGLE'),
+                            ),
+                          );
+                        },
+                      ),
                     ],
                   ),
                   Padding(
@@ -177,5 +221,9 @@ class _SignupScreenState extends State<SignupScreen> {
         ),
       ),
     );
+  }
+
+  void _onGooglePressed(BuildContext context) async {
+    context.read<AuthBloc>().add(AuthStart());
   }
 }

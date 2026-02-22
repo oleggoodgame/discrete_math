@@ -92,12 +92,18 @@ class _FavoriteScreenState extends ConsumerState<FavoriteScreen> {
         body: (_favoritesLoaded && _graphsLoaded)
             ? _favoriteGraphs.isEmpty
                   ? const Center(child: Text("No favorites yet"))
-                  : ListView.builder(
-                      itemCount: _favoriteGraphs.length,
-                      itemBuilder: (context, index) {
-                        final graph = _favoriteGraphs[index];
-                        return GraphWidget(isFavorite: true, graph: graph);
+                  : RefreshIndicator(
+                      onRefresh: () async{
+                        await context.read<GraphsCubit>().loadGraphs();
                       },
+                      child: ListView.builder(
+                        physics: AlwaysScrollableScrollPhysics(),
+                        itemCount: _favoriteGraphs.length,
+                        itemBuilder: (context, index) {
+                          final graph = _favoriteGraphs[index];
+                          return GraphWidget(isFavorite: true, graph: graph);
+                        },
+                      ),
                     )
             : const Center(child: CircularProgressIndicator()),
       ),

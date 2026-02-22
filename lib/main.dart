@@ -1,16 +1,11 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:discrete_math/application/data/style/dark_style.dart';
 import 'package:discrete_math/application/data/style/light_style.dart';
+import 'package:discrete_math/core/auth/auth/bloc/auth_bloc.dart';
 import 'package:discrete_math/core/auth/internet_connection/cubit/internet_cubit.dart';
 import 'package:discrete_math/core/auth/internet_connection/state/internet_state.dart';
 import 'package:discrete_math/core/auth/signup/bloc/signup_bloc.dart';
 import 'package:discrete_math/core/auth/signup/service/signup_service.dart';
-import 'package:discrete_math/core/graph/bfs/bloc/bloc_bfs.dart';
-import 'package:discrete_math/core/graph/bfs/service/service_bfs.dart';
-import 'package:discrete_math/core/graph/detour/bloc/detour_bloc.dart';
-import 'package:discrete_math/core/graph/detour/service/detour_service.dart';
-import 'package:discrete_math/core/graph/dfs/bloc/bloc_dfs.dart';
-import 'package:discrete_math/core/graph/dfs/service/service_dfs.dart';
 import 'package:discrete_math/core/graph/edit/cubit/edit_bloc.dart';
 import 'package:discrete_math/core/graph/edit/service/edit_service.dart';
 import 'package:discrete_math/core/graph/eulerian/bloc/eulirian_bloc.dart';
@@ -61,11 +56,11 @@ class MainApp extends ConsumerWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => InternetCubit(connectivity: connectivity)),
-        BlocProvider<DetourBloc>(
-          create: (_) => DetourBloc(service: DetourService()),
-        ),
-        BlocProvider<BfsBloc>(create: (_) => BfsBloc(service: BfsService())),
-        BlocProvider<DfsBloc>(create: (_) => DfsBloc(service: DfsService())),
+        // BlocProvider<DetourBloc>(
+        //   create: (_) => DetourBloc(service: DetourService()),
+        // ),
+        // BlocProvider<BfsBloc>(create: (_) => BfsBloc(service: BfsService())),
+        // BlocProvider<DfsBloc>(create: (_) => DfsBloc(service: DfsService())),
         BlocProvider<HamiltonianBloc>(
           create: (_) => HamiltonianBloc(service: HamiltonianService()),
         ),
@@ -79,6 +74,10 @@ class MainApp extends ConsumerWidget {
         BlocProvider<FavoriteCubit>(
           create: (_) => FavoriteCubit(FavoriteService()),
         ),
+        BlocProvider<AuthBloc>(
+          create: (_) => AuthBloc(),
+        ),
+        
         BlocProvider(
           create: (context) => ThemeCubit(
             ThemeLocalDataSource(context.read<SharedPreferences>()),
@@ -98,6 +97,7 @@ class MainApp extends ConsumerWidget {
               }
 
               return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
                 routerConfig: router,
                 themeMode: switch (theme) {
                   AppThemeMode.light => ThemeMode.light,

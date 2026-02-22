@@ -123,42 +123,42 @@ class DetourService {
   //   }
   // }
 
-  Stream<Set<Vertex>> detourSteps2({
-    required Vertex start,
-    required Vertex find,
-    required Map<String, Vertex> graph,
-  }) async* {
-    final queue_start = Queue<Vertex>();
-    final queue_find = Queue<Vertex>();
+  // Stream<Set<Vertex>> detourSteps2({
+  //   required Vertex start,
+  //   required Vertex find,
+  //   required Map<String, Vertex> graph,
+  // }) async* {
+  //   final queue_start = Queue<Vertex>();
+  //   final queue_find = Queue<Vertex>();
 
-    queue_start.add(start);
-    queue_find.add(find);
-    final path = <Vertex>{start, find};
+  //   queue_start.add(start);
+  //   queue_find.add(find);
+  //   final path = <Vertex>{start, find};
 
-    while (queue_start.isNotEmpty && queue_find.isNotEmpty) {
-      final s = queue_start.removeFirst();
-      final f = queue_find.removeFirst();
+  //   while (queue_start.isNotEmpty && queue_find.isNotEmpty) {
+  //     final s = queue_start.removeFirst();
+  //     final f = queue_find.removeFirst();
 
-      // розширяєш start
-      for (final id in s.connection) {
-        final n = graph[id];
-        if (n != null) queue_start.add(n);
-      }
+  //     // розширяєш start
+  //     for (final id in s.connection) {
+  //       final n = graph[id];
+  //       if (n != null) queue_start.add(n);
+  //     }
 
-      // розширяєш find
-      for (final id in f.connection) {
-        final n = graph[id];
-        if (n != null) queue_find.add(n);
-      }
+  //     // розширяєш find
+  //     for (final id in f.connection) {
+  //       final n = graph[id];
+  //       if (n != null) queue_find.add(n);
+  //     }
 
-      final common = findCommon(queue_start.toSet(), queue_find.toSet());
-      if (common != null) {
-        print("MEET AT ${common.data}");
-        detourSteps2(graph: graph, start: start, find: common);
-        break;
-      }
-    }
-  }
+  //     final common = findCommon(queue_start.toSet(), queue_find.toSet());
+  //     if (common != null) {
+  //       print("MEET AT ${common.data}");
+  //       detourSteps2(graph: graph, start: start, find: common);
+  //       break;
+  //     }
+  //   }
+  // }
 
   Stream<Set<Vertex>> detourSteps4({
     // one of the best
@@ -421,30 +421,46 @@ class DetourService {
   //   }
   // }
 
-  bool existsPath({
-    required String from,
-    required String to,
-    required Map<String, Vertex> graph,
-  }) {
-    final queue = Queue<String>();
-    final visited = <String>{};
+  // bool existsPath({
+  //   required String from,
+  //   required String to,
+  //   required Map<String, Vertex> graph,
+  // }) {
+  //   final queue = Queue<String>();
+  //   final visited = <String>{};
 
-    queue.add(from);
-    visited.add(from);
+  //   print("=== existsPath START ===");
+  //   print("FROM: $from  TO: $to");
 
-    while (queue.isNotEmpty) {
-      final current = queue.removeFirst();
-      if (current == to) return true;
+  //   queue.add(from);
+  //   visited.add(from);
 
-      for (final next in graph[current]!.connection) {
-        if (!visited.contains(next)) {
-          visited.add(next);
-          queue.add(next);
-        }
-      }
-    }
-    return false;
-  }
+  //   while (queue.isNotEmpty) {
+  //     print("Queue: $queue");
+  //     print("Visited: $visited");
+
+  //     final current = queue.removeFirst();
+  //     print("Processing: $current");
+
+  //     if (current == to) {
+  //       print("✅ PATH FOUND");
+  //       return true;
+  //     }
+
+  //     for (final next in graph[current]!.connection) {
+  //       print("Check neighbor: $next");
+
+  //       if (!visited.contains(next)) {
+  //         print("→ add to queue: $next");
+  //         visited.add(next);
+  //         queue.add(next);
+  //       }
+  //     }
+  //   }
+
+  //   print("❌ PATH NOT FOUND");
+  //   return false;
+  // }
 
   Stream<Set<Vertex>> detourStepsFixed({
     required Vertex start,
@@ -460,6 +476,9 @@ class DetourService {
     final parentStart = <String, String?>{};
     final parentFind = <String, String?>{};
 
+    print("=== detourStepsFixed START ===");
+    print("START: ${start.data}  FIND: ${find.data}");
+
     queueStart.add(start.data);
     visitedStart.add(start.data);
     parentStart[start.data] = null;
@@ -469,15 +488,31 @@ class DetourService {
     parentFind[find.data] = null;
 
     String? meetId = null;
+    int step = 0;
+
     while (queueStart.isNotEmpty && queueFind.isNotEmpty) {
+      step++;
+      print("\n=== STEP $step ===");
+      print("QueueStart: $queueStart");
+      print("QueueFind: $queueFind");
+      print("VisitedStart: $visitedStart");
+      print("VisitedFind: $visitedFind");
+
+      /// --- START SIDE ---
       final s = queueStart.removeFirst();
+      print("Process START node: $s");
+
       for (final n in graph[s]!.connection) {
+        print("  START neighbor: $n");
+
         if (!visitedStart.contains(n)) {
+          print("  → add to START queue: $n");
           visitedStart.add(n);
           parentStart[n] = s;
           queueStart.add(n);
 
           if (visitedFind.contains(n)) {
+            print("🔥 MEET at $n from START side");
             meetId = n;
             break;
           }
@@ -485,14 +520,21 @@ class DetourService {
       }
       if (meetId != null) break;
 
+      /// --- FIND SIDE ---
       final f = queueFind.removeFirst();
+      print("Process FIND node: $f");
+
       for (final n in graph[f]!.connection) {
+        print("  FIND neighbor: $n");
+
         if (!visitedFind.contains(n)) {
+          print("  → add to FIND queue: $n");
           visitedFind.add(n);
           parentFind[n] = f;
           queueFind.add(n);
 
           if (visitedStart.contains(n)) {
+            print("🔥 MEET at $n from FIND side");
             meetId = n;
             break;
           }
@@ -503,25 +545,37 @@ class DetourService {
       await Future.delayed(const Duration(milliseconds: 200));
     }
 
-    if (meetId == null) return;
-
-    if (!existsPath(from: meetId, to: find.data, graph: graph)) {
+    if (meetId == null) {
+      print("❌ NO MEETING POINT");
       return;
     }
 
+    print("=== RECONSTRUCT PATH from meetId=$meetId ===");
+
+    // if (!existsPath(from: meetId, to: find.data, graph: graph)) {
+    //   print("❌ existsPath check failed");
+    //   return;
+    // }
+
     final path = <String>[];
 
+    /// backtrack START
     String? cur = meetId;
     while (cur != null) {
       path.insert(0, cur);
+      print("Backtrack START: $cur");
       cur = parentStart[cur];
     }
 
+    /// forward FIND
     cur = parentFind[meetId];
     while (cur != null) {
+      print("Forward FIND: $cur");
       path.add(cur);
       cur = parentFind[cur];
     }
+
+    print("✅ FINAL PATH: $path");
 
     yield path
         .map((id) => graph[id]!.copyWith(state: VertexState.visited))

@@ -50,5 +50,6 @@ app.*.map.json
 /windows
 /macos
 .metadata
-# firebase.json
-# lib/firebase_options.dart
+firebase.json
+lib/firebase_options.dart
+lib/secret_code.dart

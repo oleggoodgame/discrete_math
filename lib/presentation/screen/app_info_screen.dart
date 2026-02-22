@@ -24,7 +24,7 @@ class AppInfoScreen extends StatelessWidget {
                 bottomRight: Radius.circular(24),
               ),
               child: Image.asset(
-                'assets/images/graph_hero.png',
+                'asset/images/graph_hero.png',
                 height: 220,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -38,7 +38,7 @@ class AppInfoScreen extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'Graph Editor & Analyzer',
+                    'Graph Explorer',
                     style: theme.textTheme.titleLarge,
                   ),
                   const SizedBox(height: 12),
@@ -51,8 +51,6 @@ class AppInfoScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: sLarge),
-
-            // 🚀 FEATURES
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
               child: Text(
@@ -64,17 +62,17 @@ class AppInfoScreen extends StatelessWidget {
             const SizedBox(height: sMedium),
 
             _FeatureCard(
-              image: 'assets/images/bfs.png',
+              image: 'asset/image/vis.png',
               title: 'Graph Traversal',
               description:
                   'Visualize and explore graph traversal algorithms step by step.',
             ),
 
             _FeatureCard(
-              image: 'assets/images/dfs.png',
-              title: 'Future Algorithms',
+              image: 'asset/image/image.png',
+              title: 'Algorithms',
               description:
-                  'More algorithms like BFS and DFS will be added soon.',
+                  'BFS and DFS ypu can learn there',
             ),
 
             const SizedBox(height: sExtraLarge),

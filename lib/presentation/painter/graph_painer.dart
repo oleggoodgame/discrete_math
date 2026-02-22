@@ -39,6 +39,20 @@ class GraphPainter extends CustomPainter {
     }
   }
 
+  Color _edgeColor(VertexState state1, VertexState state2) {
+    if (state1 == state2 && state1 == VertexState.idle) return Colors.black;
+    if (state1 == VertexState.visiting || state2 == VertexState.visiting)
+      return Colors.orange;
+    if (state1 == state2 && state1 == VertexState.visited) return Colors.green;
+    return Colors.black;
+  }
+
+  @override
+  bool shouldRepaint(covariant GraphPainter oldDelegate) {
+    return oldDelegate.vertices != vertices;
+  }
+}
+
   // void _drawVertices(Canvas canvas) {
   //   for (final vertex in vertices) {
   //     final paint = Paint()
@@ -68,17 +82,3 @@ class GraphPainter extends CustomPainter {
   //     textPainter.paint(canvas, textOffset);
   //   }
   // }
-
-  Color _edgeColor(VertexState state1, VertexState state2) {
-    if (state1 == state2 && state1 == VertexState.idle) return Colors.black;
-    if (state1 == state2 && state1 == VertexState.visiting)
-      return Colors.orange;
-    if (state1 == state2 && state1 == VertexState.visited) return Colors.green;
-    return Colors.black;
-  }
-
-  @override
-  bool shouldRepaint(covariant GraphPainter oldDelegate) {
-    return oldDelegate.vertices != vertices;
-  }
-}

@@ -10,8 +10,12 @@ class DfsService {
     final stack = Queue<Vertex>();
     final visited = <Vertex>{};
     print(graph.toString());
+    final seen = <String>{};
+
     // print("Start $start");
     stack.add(start);
+    seen.add(start.data);
+
     while (stack.isNotEmpty) {
       final current = stack.last;
       print("Queue: $stack");
@@ -30,11 +34,10 @@ class DfsService {
       );
       print(firstConnection);
       final neighbor = graph[firstConnection];
-      final fifi = visited.where((v) => v.data == firstConnection).toSet();
 
-      if (neighbor != null && fifi.isEmpty) {
+      if (neighbor != null && !seen.contains(neighbor.data)) {
         print(visited.any((v) => v.data != neighbor.data));
-        print("FIFI: $fifi");
+        seen.add(neighbor.data);
         stack.add(neighbor);
       } else {
         stack.removeLast();

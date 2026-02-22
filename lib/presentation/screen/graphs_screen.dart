@@ -60,7 +60,12 @@ class _GraphsScreenState extends State<GraphsScreen> {
           ),
         ],
       ),
-      body: const ListGraphsWidget(),
+      body: RefreshIndicator(
+        onRefresh: () async{
+          await context.read<FavoriteCubit>().load();
+        },
+        child: ListGraphsWidget(),
+      ),
     );
   }
 
@@ -115,7 +120,7 @@ class _GraphsScreenState extends State<GraphsScreen> {
                       Expanded(
                         child: OutlinedButton(
                           onPressed: () {
-                            Navigator.pop(dialogContext, null);// це 
+                            Navigator.pop(dialogContext, null); // це
                           },
                           child: const Text('Cancel'),
                         ),
@@ -131,7 +136,7 @@ class _GraphsScreenState extends State<GraphsScreen> {
                             Navigator.pop(
                               dialogContext,
                               titleController.text.trim(),
-                            );// це також 
+                            ); // це також
                           },
                           child: const Text('OK'),
                         ),

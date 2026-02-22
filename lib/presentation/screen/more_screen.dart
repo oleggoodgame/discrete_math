@@ -34,20 +34,20 @@ class MoreScreen extends StatelessWidget {
               await launchUrl(uri, mode: LaunchMode.externalApplication);
             },
           ),
-          SettingsCardWidget(
-            title: "GitHub",
-            subtitle: "You can see project in github",
-            icon: Icons.account_tree_rounded,
-            onTap: () async {
-              final uri = Uri.tryParse(
-                "https://github.com/oleggoodgame/discrete_math",
-              );
+          // SettingsCardWidget(
+          //   title: "GitHub",
+          //   subtitle: "You can see project in github",
+          //   icon: Icons.account_tree_rounded,
+          //   onTap: () async {
+          //     final uri = Uri.tryParse(
+          //       "https://github.com/oleggoodgame/discrete_math",
+          //     );
 
-              if (uri == null) return;
+          //     if (uri == null) return;
 
-              await launchUrl(uri, mode: LaunchMode.externalApplication);
-            },
-          ),
+          //     await launchUrl(uri, mode: LaunchMode.externalApplication);
+          //   },
+          // ),
           SettingsCardWidget(
             title: "Delete Account",
             subtitle: "Delete all your information",
