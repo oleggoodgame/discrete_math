@@ -15,8 +15,10 @@ class ThemeSwitchWidget extends StatelessWidget {
   Widget build(BuildContext contextW) {
     return BlocBuilder<ThemeCubit, AppThemeMode>(
       builder: (context, state) {
-        final isDark = state == AppThemeMode.dark;
+        // final isDark = state == AppThemeMode.dark;
+
         final theme = Theme.of(contextW);
+        final isDark = theme.brightness == Brightness.dark;
         return Card(
           elevation: 0,
           margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),

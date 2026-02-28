@@ -6,6 +6,7 @@ import 'package:discrete_math/application/provider/graph_provider.dart';
 import 'package:discrete_math/core/graph/bfs/bloc/bloc_bfs.dart';
 import 'package:discrete_math/core/graph/detour/bloc/detour_bloc.dart';
 import 'package:discrete_math/core/graph/detour/event/detour_event.dart';
+import 'package:discrete_math/core/graph/detour/service/detour_service.dart';
 import 'package:discrete_math/core/graph/detour/state/detour_state.dart';
 import 'package:discrete_math/core/graph/dfs/bloc/bloc_dfs.dart';
 import 'package:discrete_math/application/data/entity/graph/event/graph_event.dart';
@@ -103,213 +104,209 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final fifi = Theme.of(context).brightness == Brightness.light;
     final notifier = ref.read(graphProviderProvider.notifier);
 
-    return MultiBlocListener(
-      listeners: [
-        BlocListener<DetourBloc, DetourState>(
-          listener: (context, state) {
-            if (state is DetourResult) {
-              ref
-                  .read(graphProviderProvider.notifier)
-                  .setVertices(state.visited);
-            }
-          },
-        ),
-        BlocListener<BfsBloc, GraphState>(
-          listener: (context, state) {
-            if (state is GraphResult) {
-              ref
-                  .read(graphProviderProvider.notifier)
-                  .setVertices(state.visited);
-            }
-          },
-        ),
-        BlocListener<DfsBloc, GraphState>(
-          listener: (context, state) {
-            if (state is GraphResult) {
-              ref
-                  .read(graphProviderProvider.notifier)
-                  .setVertices(state.visited);
-            }
-          },
-        ),
-        // BlocListener<EditCubit, EditState>(
-        //   listener: (context, state) {
-        //     if (state is EditSuccess) {
-        //       context.go('/graphs');
-        //     }
-        //   },
-        // ),
-      ],
-      child: PopScope(
-        onPopInvokedWithResult: (didPop, result) {
-          print("START RESTORED \n\n");
-          if (notifier.isAlgorithmRunning) {
-            notifier.restoreSnapshot();
-            print("Restored\n\n\n\n");
-          }
-
-          context.read<EditCubit>().editGraph(
-            data: ref.read(graphProviderProvider),
-            id: widget.graph.id,
-          );
-          print("After edit\n\n\n");
-          context.read<GraphsCubit>().loadGraphs();
-          print("Loadedededed GRAPHS\n\n");
-        },
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Editor Screen'),
-            actions: [
-              IconButton(
-                onPressed: () {
-                  context.read<EditCubit>().editGraph(
-                    data: ref.read(graphProviderProvider),
-                    id: widget.graph.id,
-                  );
-                },
-                icon: Icon(Icons.save),
-              ),
-            ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            backgroundColor: Colors.blueGrey,
-            onPressed: () {
-              ref.read(fabMenuOpenProvider.notifier).state = !isFabOpen;
+    return  MultiBlocListener(
+        listeners: [
+          BlocListener<DetourBloc, DetourState>(
+            listener: (context, state) {
+              if (state is DetourResult) {
+                ref
+                    .read(graphProviderProvider.notifier)
+                    .setVertices(state.visited);
+              }
             },
-            child: Icon(
-              isFabOpen ? Icons.close : Icons.menu,
-              color: Colors.black,
-            ),
           ),
-          body: Stack(
-            children: [
-              InteractiveViewer(
-                transformationController: _controller,
-                minScale: 0.5,
-                maxScale: 3.0,
-                boundaryMargin: const EdgeInsets.all(0),
-                constrained: false,
-                child: Center(
-                  child: Container(
-                    width: canvasSize,
-                    height: canvasSize,
-                    decoration: BoxDecoration(
-                      color: fifi ? Colors.white : Colors.grey.shade400,
-                      border: Border.all(color: Colors.black, width: 3),
+          BlocListener<BfsBloc, GraphState>(
+            listener: (context, state) {
+              if (state is GraphResult) {
+                ref
+                    .read(graphProviderProvider.notifier)
+                    .setVertices(state.visited);
+              }
+            },
+          ),
+          BlocListener<DfsBloc, GraphState>(
+            listener: (context, state) {
+              if (state is GraphResult) {
+                ref
+                    .read(graphProviderProvider.notifier)
+                    .setVertices(state.visited);
+              }
+            },
+          ),
+        ],
+        child: PopScope(
+          onPopInvokedWithResult: (didPop, result) {
+            if (notifier.isAlgorithmRunning) {
+              notifier.restoreSnapshot();
+            }
+
+            context.read<EditCubit>().editGraph(
+              data: ref.read(graphProviderProvider),
+              id: widget.graph.id,
+            );
+            context.read<GraphsCubit>().loadGraphs();
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: const Text('Editor Screen'),
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    context.read<EditCubit>().editGraph(
+                      data: ref.read(graphProviderProvider),
+                      id: widget.graph.id,
+                    );
+                  },
+                  icon: Icon(Icons.save),
+                ),
+              ],
+            ),
+            floatingActionButton: FloatingActionButton(
+              backgroundColor: Colors.blueGrey,
+              onPressed: () {
+                ref.read(fabMenuOpenProvider.notifier).state = !isFabOpen;
+              },
+              child: Icon(
+                isFabOpen ? Icons.close : Icons.menu,
+                color: Colors.black,
+              ),
+            ),
+            body: Stack(
+              children: [
+                InteractiveViewer(
+                  transformationController: _controller,
+                  minScale: 0.5,
+                  maxScale: 3.0,
+                  boundaryMargin: const EdgeInsets.all(0),
+                  constrained: false,
+                  child: Center(
+                    child: Container(
+                      width: canvasSize,
+                      height: canvasSize,
+                      decoration: BoxDecoration(
+                        color: fifi ? Colors.white : Colors.grey.shade400,
+                        border: Border.all(color: Colors.black, width: 3),
+                      ),
+                      child: Stack(
+                        children: [
+                          CustomPaint(
+                            size: const Size(canvasSize, canvasSize),
+                            painter: GraphPainter(vertices: vertices),
+                          ),
+
+                          for (final vertex in vertices)
+                            Positioned(
+                              left: vertex.offset.dx - 25,
+                              top: vertex.offset.dy - 25,
+                              child: TreeVertexWidget(vertex: vertex),
+                            ),
+
+                          if (selectedVertex != null)
+                            Positioned(
+                              left: selectedVertex.offset.dx + 30,
+                              top: selectedVertex.offset.dy - 20,
+                              child: VertexContextMenu(vertex: selectedVertex),
+                            ),
+                        ],
+                      ),
                     ),
-                    child: Stack(
+                  ),
+                ),
+                if (isFabOpen)
+                  Positioned(
+                    right: 16,
+                    bottom: 88,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        CustomPaint(
-                          size: const Size(canvasSize, canvasSize),
-                          painter: GraphPainter(vertices: vertices),
+                        _FabMenuItem(
+                          icon: Icons.timeline,
+                          label: 'Path',
+                          onTap: () {
+                            final vertices = ref.read(graphProviderProvider);
+                            ref
+                                .read(graphProviderProvider.notifier)
+                                .takeSnapshot();
+
+                            _showDetourDialog(context, vertices);
+                          },
                         ),
+                        _FabMenuItem(
+                          icon: Icons.account_tree,
+                          label: 'DFS',
+                          onTap: () {
+                            final vertices = ref.read(graphProviderProvider);
+                            final graphMap = {
+                              for (final v in vertices) v.data: v,
+                            };
+                            ref
+                                .read(graphProviderProvider.notifier)
+                                .takeSnapshot();
 
-                        for (final vertex in vertices)
-                          Positioned(
-                            left: vertex.offset.dx - 25,
-                            top: vertex.offset.dy - 25,
-                            child: TreeVertexWidget(vertex: vertex),
-                          ),
+                            context.read<DfsBloc>().add(
+                              StartGraph(
+                                start: vertices.first,
+                                graph: graphMap,
+                              ),
+                            );
+                          },
+                        ),
+                        _FabMenuItem(
+                          icon: Icons.swap_horiz,
+                          label: 'BFS',
+                          onTap: () {
+                            final vertices = ref.read(graphProviderProvider);
+                            final graphMap = {
+                              for (final v in vertices) v.data: v,
+                            };
+                            ref
+                                .read(graphProviderProvider.notifier)
+                                .takeSnapshot();
 
-                        if (selectedVertex != null)
-                          Positioned(
-                            left: selectedVertex.offset.dx + 30,
-                            top: selectedVertex.offset.dy - 20,
-                            child: VertexContextMenu(vertex: selectedVertex),
+                            context.read<BfsBloc>().add(
+                              StartGraph(
+                                start: vertices.first,
+                                graph: graphMap,
+                              ),
+                            );
+                          },
+                        ),
+                        _FabMenuItem(
+                          icon: Icons.info_outline,
+                          label: 'Information',
+                          onTap: () => context.push(
+                            '/information_screen',
+                            extra: widget.graph,
                           ),
+                        ),
+                        _FabMenuItem(
+                          icon: Icons.add_circle_outline,
+                          label: 'Add',
+                          onTap: () => context.push('/add_vertex'),
+                        ),
+                        const SizedBox(height: 6),
                       ],
                     ),
                   ),
-                ),
-              ),
-              if (isFabOpen) // Можливо тут треба буде додати перевірку екрану щоб гарно виходило
                 Positioned(
-                  right: 16,
-                  bottom: 88,
+                  left: 16,
+                  bottom: 16,
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      _FabMenuItem(
-                        icon: Icons.timeline,
-                        label: 'Path',
-                        onTap: () {
-                          final vertices = ref.read(graphProviderProvider);
-                          ref
-                              .read(graphProviderProvider.notifier)
-                              .takeSnapshot();
-
-                          _showDetourDialog(context, vertices);
-                        },
+                      _ZoomButton(icon: Icons.add, onPressed: () => _zoom(0.2)),
+                      const SizedBox(height: 8),
+                      _ZoomButton(
+                        icon: Icons.remove,
+                        onPressed: () => _zoom(-0.2),
                       ),
-                      _FabMenuItem(
-                        icon: Icons.account_tree,
-                        label: 'DFS',
-                        onTap: () {
-                          final vertices = ref.read(graphProviderProvider);
-                          final graphMap = {
-                            for (final v in vertices) v.data: v,
-                          };
-                          ref
-                              .read(graphProviderProvider.notifier)
-                              .takeSnapshot();
-
-                          context.read<DfsBloc>().add(
-                            StartGraph(start: vertices.first, graph: graphMap),
-                          );
-                        },
-                      ),
-                      _FabMenuItem(
-                        icon: Icons.swap_horiz,
-                        label: 'BFS',
-                        onTap: () {
-                          final vertices = ref.read(graphProviderProvider);
-                          final graphMap = {
-                            for (final v in vertices) v.data: v,
-                          };
-                          ref
-                              .read(graphProviderProvider.notifier)
-                              .takeSnapshot();
-
-                          context.read<BfsBloc>().add(
-                            StartGraph(start: vertices.first, graph: graphMap),
-                          );
-                        },
-                      ),
-                      _FabMenuItem(
-                        icon: Icons.info_outline,
-                        label: 'Information',
-                        onTap: () => context.push(
-                          '/information_screen',
-                          extra: widget.graph,
-                        ),
-                      ),
-                      _FabMenuItem(
-                        icon: Icons.add_circle_outline,
-                        label: 'Add',
-                        onTap: () => context.push('/add_vertex'),
-                      ),
-                      const SizedBox(height: 6),
                     ],
                   ),
                 ),
-              Positioned(
-                left: 16,
-                bottom: 16,
-                child: Column(
-                  children: [
-                    _ZoomButton(icon: Icons.add, onPressed: () => _zoom(0.2)),
-                    const SizedBox(height: 8),
-                    _ZoomButton(
-                      icon: Icons.remove,
-                      onPressed: () => _zoom(-0.2),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
-      ),
+      
     );
   }
 
@@ -317,7 +314,7 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
     final startController = TextEditingController();
     final findController = TextEditingController();
     final formKey = GlobalKey<FormState>();
-
+    final detourBloc = context.read<DetourBloc>();
     showDialog(
       context: context,
       barrierDismissible: false,
@@ -406,7 +403,8 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                               for (final v in vertices) v.data: v,
                             };
 
-                            context.read<DetourBloc>().add(
+                            detourBloc.add(
+                              //
                               StartDetour(
                                 start: startVertex,
                                 find: findVertex,

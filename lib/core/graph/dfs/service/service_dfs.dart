@@ -12,13 +12,13 @@ class DfsService {
     print(graph.toString());
     final seen = <String>{};
 
-    // print("Start $start");
+    print("Start $start");
     stack.add(start);
     seen.add(start.data);
 
     while (stack.isNotEmpty) {
       final current = stack.last;
-      print("Queue: $stack");
+      print("Stack: $stack");
       print("Current: $current");
 
       final visiting = current.copyWith(state: VertexState.visiting);
@@ -47,7 +47,7 @@ class DfsService {
       visited
         ..remove(visiting)
         ..add(done);
-      // print("END: $visited");
+      print("END: $visited");
       yield {...visited};
       await Future.delayed(const Duration(milliseconds: 300));
     }

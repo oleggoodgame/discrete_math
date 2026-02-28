@@ -24,7 +24,7 @@ class AppInfoScreen extends StatelessWidget {
                 bottomRight: Radius.circular(24),
               ),
               child: Image.asset(
-                'asset/images/graph_hero.png',
+                'asset/image/logo.png',
                 height: 220,
                 width: double.infinity,
                 fit: BoxFit.cover,
@@ -127,8 +127,8 @@ class _FeatureCard extends StatelessWidget {
               ),
               child: Image.asset(
                 image,
-                width: 100,
-                height: 100,
+                width: 300,
+                height: 600,
                 fit: BoxFit.cover,
               ),
             ),

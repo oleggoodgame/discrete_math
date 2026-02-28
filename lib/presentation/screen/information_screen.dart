@@ -31,8 +31,8 @@ class _InformationScreenState extends ConsumerState<InformationScreen> {
   void initState() {
     super.initState();
     final vertices = ref.read(graphProviderProvider);
-
-    context.read<HamiltonianBloc>().add(HamiltonianStart(vertices));
+    final graphMap = {for (final v in vertices) v.data: v};
+    context.read<HamiltonianBloc>().add(HamiltonianStart(graphMap));
 
     context.read<EulerianBloc>().add(EulerianStart(vertices));
     _headController = TextEditingController(

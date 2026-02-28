@@ -10,7 +10,7 @@ class HamiltonianBloc extends Bloc<HamiltonianEvent, HamiltonianState> {
     on<HamiltonianStart>((event, emit) async {
       emit(HamiltonianProcessing());
 
-      final result = service.analyze(vertices: event.vertices);
+      final result = service.analyze(graph: event.graph);
       emit(HamiltonianResult(result));
     });
   }
