@@ -23,7 +23,7 @@ import 'package:discrete_math/core/theme/service/service_theme.dart';
 import 'package:discrete_math/core/theme/state/state_theme.dart';
 import 'package:discrete_math/firebase_options.dart';
 import 'package:discrete_math/navigation/go_router.dart';
-import 'package:discrete_math/presentation/screen/no_internet_scree.dart';
+import 'package:discrete_math/presentation/screen/settings/no_internet_scree.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

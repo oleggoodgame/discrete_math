@@ -127,9 +127,9 @@ class _FeatureCard extends StatelessWidget {
               ),
               child: Image.asset(
                 image,
-                width: 300,
-                height: 600,
-                fit: BoxFit.cover,
+                width: 250,
+                height: 500,
+                fit: BoxFit.contain,
               ),
             ),
             const SizedBox(width: 16),

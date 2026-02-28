@@ -29,10 +29,11 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
       final vertex = widget.vertex!;
       _nameController = TextEditingController(text: vertex.data);
       _offSetXController = TextEditingController(
-        text: vertex.offset.dx.toString().substring(0,7),
+        text: vertex.offset.dx.toStringAsFixed(4),
       );
+
       _offSetYController = TextEditingController(
-        text: vertex.offset.dy.toString().substring(0,7),
+        text: vertex.offset.dy.toStringAsFixed(4),
       );
       _connectController = TextEditingController(
         text: vertex.connection.join(' '),
@@ -55,9 +56,7 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
   Widget build(BuildContext context) {
     final fifi = widget.editor ?? false;
     return Scaffold(
-      appBar: AppBar(
-        title: fifi ? Text('Edit Tree Vertex') : Text('Add Tree Vertex'),
-      ),
+      appBar: AppBar(title: fifi ? Text('Edit Vertex') : Text('Add Vertex')),
       body: Form(
         key: _formKey,
         child: Column(
@@ -93,12 +92,18 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
                 label: 'Offset X position',
                 hint: 'Enter offset X',
                 validator: (v) {
-                  if (v == null) {
-                    return 'Need to enter position';
+                  if (v == null || v.isEmpty) {
+                    return null;
                   }
-                  if (v.length < 1 && v.length > 4) {
-                    return 'Must be less than 1000 and more than 0';
+
+                  final value = double.tryParse(v);
+                  if (value == null) {
+                    return 'Enter a valid number';
                   }
+                  if (v.length > 5) {
+                    return 'Enter smaller number';
+                  }
+
                   return null;
                 },
               ),
@@ -111,12 +116,18 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
                 label: 'Offset Y position',
                 hint: 'Enter offset Y',
                 validator: (v) {
-                  if (v == null) {
-                    return 'Need to enter position';
+                  if (v == null || v.isEmpty) {
+                    return null;
                   }
-                  if (v.length < 1 && v.length > 4) {
-                    return 'Must be less than 1000 and more than 0';
+
+                  final value = double.tryParse(v);
+                  if (value == null) {
+                    return 'Enter a valid number';
                   }
+                  if (v.length > 5) {
+                    return 'Enter smaller number';
+                  }
+
                   return null;
                 },
               ),
@@ -171,17 +182,15 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
 
   void _onSubmit(bool fifi) {
     if (!_formKey.currentState!.validate()) return;
-
+    final x = double.tryParse(_offSetXController.text) ?? 100;
+    final y = double.tryParse(_offSetYController.text) ?? 100;
     final connect = _connectController.text
         .split(RegExp(r'[\s,]+'))
         .where((e) => e.isNotEmpty)
         .toSet();
     final vertex = Vertex(
       data: _nameController.text,
-      offset: Offset(
-        double.parse(_offSetXController.text),
-        double.parse(_offSetYController.text),
-      ),
+      offset: Offset(x, y),
       connection: connect,
     );
     if (fifi == true) {
@@ -191,15 +200,8 @@ class _EditVertexScreenState extends ConsumerState<EditVertexScreen> {
     } else {
       ref.read(graphProviderProvider.notifier).addVertex(vertex);
     }
-    // final vertex = Vertex(
-    //   data: _nameController.text,
-    //   data: _nameController.text,
-    //   offset: Offset(
-    //     double.parse(_offSetXController.text),
-    //     double.parse(_offSetYController.text),
-    //   ),
-    //   connection: connect,
-    // );
+    print("EDIT $vertex");
+    print(ref.read(graphProviderProvider).toList());
     context.pop();
   }
 }

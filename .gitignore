@@ -53,6 +53,7 @@ app.*.map.json
 firebase.json
 lib/secret_code.dart
 
+firebase_options.dart
 
 lib/firebase_options.dart
 lab/main.dart

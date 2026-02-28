@@ -547,7 +547,7 @@ class DetourService {
 
     if (meetId == null) {
       print("❌ NO MEETING POINT");
-      return;
+      throw("❌ NO MEETING POINT");
     }
 
     print("=== RECONSTRUCT PATH from meetId=$meetId ===");
