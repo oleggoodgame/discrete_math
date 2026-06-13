@@ -1,7 +1,7 @@
 name: discrete_math
 description: "A new Flutter project."
-publish_to: "none"
-version: 0.1.0
+publish_to: "Play Market"
+version: 1.0.1+2
 
 environment:
   sdk: ^3.8.1
@@ -32,6 +32,7 @@ dev_dependencies:
   riverpod_generator: ^2.6.1
   json_serializable: ^6.7.1
   build_runner: ^2.5.4
+  change_app_package_name: ^1.5.0
 
 flutter_icons:
   android: true

@@ -4,9 +4,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class GraphsService {
   final FirebaseFirestore _db = FirebaseFirestore.instance;
-  final User _auth = FirebaseAuth.instance.currentUser!;
 
   Future<List<GraphEntity>> getAllGraphs() async {
+    final User _auth = FirebaseAuth.instance.currentUser!;
+
     final snapshot = await _db
         .collection('accounts')
         .doc(_auth.uid)
@@ -18,6 +19,8 @@ class GraphsService {
   }
 
   Future<void> deleteGraph(GraphEntity graph) async {
+    final User _auth = FirebaseAuth.instance.currentUser!;
+
     final snapshot = await _db
         .collection('accounts')
         .doc(_auth.uid)

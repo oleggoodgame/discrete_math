@@ -1,6 +1,7 @@
 import 'package:discrete_math/application/data/style/info_str.dart';
 import 'package:discrete_math/application/data/style/theme_style.dart';
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AppInfoScreen extends StatelessWidget {
   const AppInfoScreen({super.key});
@@ -10,10 +11,7 @@ class AppInfoScreen extends StatelessWidget {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('About App'),
-        centerTitle: true,
-      ),
+      appBar: AppBar(title: const Text('About App'), centerTitle: true),
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -37,15 +35,9 @@ class AppInfoScreen extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Graph Explorer',
-                    style: theme.textTheme.titleLarge,
-                  ),
+                  Text('Graph Explorer', style: theme.textTheme.titleLarge),
                   const SizedBox(height: 12),
-                  Text(
-                    appInfoDescription,
-                    style: theme.textTheme.bodyMedium,
-                  ),
+                  Text(appInfoDescription, style: theme.textTheme.bodyMedium),
                 ],
               ),
             ),
@@ -53,10 +45,7 @@ class AppInfoScreen extends StatelessWidget {
             const SizedBox(height: sLarge),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Text(
-                'Features',
-                style: theme.textTheme.titleMedium,
-              ),
+              child: Text('Features', style: theme.textTheme.titleMedium),
             ),
 
             const SizedBox(height: sMedium),
@@ -71,8 +60,7 @@ class AppInfoScreen extends StatelessWidget {
             _FeatureCard(
               image: 'asset/image/image.png',
               title: 'Algorithms',
-              description:
-                  'BFS and DFS ypu can learn there',
+              description: 'BFS and DFS ypu can learn there',
             ),
 
             const SizedBox(height: sExtraLarge),
@@ -81,8 +69,19 @@ class AppInfoScreen extends StatelessWidget {
               child: SizedBox(
                 width: double.infinity,
                 child: ElevatedButton.icon(
-                  onPressed: () {
-                    Navigator.pushNamed(context, '/more');
+                  onPressed: () async {
+                    final uri = Uri(
+                      scheme: 'mailto',
+                      path: 'oleggludyn09@gmail.com',
+                      queryParameters: {
+                        'subject': 'Bug Report',
+                        'body': 'Please describe the issue here.',
+                      },
+                    );
+
+                    if (!await canLaunchUrl(uri)) return;
+
+                    await launchUrl(uri, mode: LaunchMode.externalApplication);
                   },
                   icon: const Icon(Icons.mail_outline),
                   label: const Text('Contact & Feedback'),
@@ -97,6 +96,7 @@ class AppInfoScreen extends StatelessWidget {
     );
   }
 }
+
 class _FeatureCard extends StatelessWidget {
   final String image;
   final String title;
@@ -115,9 +115,7 @@ class _FeatureCard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Card(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 2,
         child: Row(
           children: [
@@ -141,10 +139,7 @@ class _FeatureCard extends StatelessWidget {
                   children: [
                     Text(title, style: theme.textTheme.titleSmall),
                     const SizedBox(height: 6),
-                    Text(
-                      description,
-                      style: theme.textTheme.bodySmall,
-                    ),
+                    Text(description, style: theme.textTheme.bodySmall),
                   ],
                 ),
               ),
