@@ -1,4 +1,4 @@
-import 'package:discrete_math/application/provider/auth_state_provider.dart';
+import 'package:discrete_math/core/auth/auth/presentation/provider/auth_state_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

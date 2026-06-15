@@ -1,8 +1,8 @@
-import 'package:discrete_math/core/auth/login/bloc/login_bloc.dart';
-import 'package:discrete_math/core/auth/login/event/login_event.dart';
+import 'package:discrete_math/core/auth/login/presentation/bloc/login_bloc.dart';
+import 'package:discrete_math/core/auth/auth/auth_event.dart';
 import 'package:discrete_math/core/auth/login/service/login_service.dart';
-import 'package:discrete_math/core/auth/state/auth_state.dart';
-import 'package:discrete_math/presentation/screen/authentication/login_screen.dart';
+import 'package:discrete_math/core/auth/auth/bloc/auth_state.dart';
+import 'package:discrete_math/core/auth/login/presentation/screen/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

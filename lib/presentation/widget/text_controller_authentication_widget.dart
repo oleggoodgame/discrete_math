@@ -1,4 +1,4 @@
-import 'package:discrete_math/application/provider/obsucure_provider.dart';
+import 'package:discrete_math/core/graph/presentation/provider/obsucure_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

@@ -1,0 +1,1 @@
+enum ConnectionStatus { wifi, mobile, disconnected }
