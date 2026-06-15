@@ -1,6 +1,6 @@
 import 'dart:async';
-import 'package:discrete_math/core/auth/login/data/repository/ilogin_repository.dart';
-import 'package:discrete_math/core/auth/signup/data/repository/signup_repostiory.dart';
+import 'package:discrete_math/core/auth/login/domain/repository/ilogin_repository.dart';
+import 'package:discrete_math/core/auth/signup/domain/repostiory/signup_repostiory.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part 'auth_event.dart';
 part 'auth_state.dart';

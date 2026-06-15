@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:discrete_math/core/auth/internet_connection/data/repository/connectivity_repository.dart';
+import 'package:discrete_math/core/auth/internet_connection/domain/repository/connectivity_repository.dart';
 import 'package:discrete_math/core/auth/internet_connection/domain/entity/connection_type.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
