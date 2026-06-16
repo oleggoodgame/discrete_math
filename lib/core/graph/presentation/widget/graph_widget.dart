@@ -1,7 +1,7 @@
 import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
-import 'package:discrete_math/core/graph/favorite/presentation/provider/favorite_provider.dart';
+import 'package:discrete_math/core/favorite/presentation/provider/favorite_provider.dart';
 import 'package:discrete_math/core/graph/presentation/provider/graph_provider.dart';
-import 'package:discrete_math/core/graph/favorite/presentation/bloc/favorite_cubit.dart';
+import 'package:discrete_math/core/favorite/presentation/bloc/favorite_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';

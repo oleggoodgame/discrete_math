@@ -1,22 +1,19 @@
 import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
-import 'package:discrete_math/application/data/style/theme_style.dart';
+import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/graph_event.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/graph_state.dart';
 import 'package:discrete_math/core/graph/presentation/provider/fab_provider.dart';
 import 'package:discrete_math/core/graph/presentation/provider/selected_vertexes_provider.dart';
 import 'package:discrete_math/core/graph/presentation/provider/graph_provider.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_bfs.dart';
-import 'package:discrete_math/core/graph/other/detour/bloc/detour_bloc.dart';
-import 'package:discrete_math/core/graph/other/detour/event/detour_event.dart';
-import 'package:discrete_math/core/graph/other/detour/service/detour_service.dart';
-import 'package:discrete_math/core/graph/other/detour/state/detour_state.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/detoure_bloc/detour_bloc.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_dfs.dart';
-import 'package:discrete_math/core/graph/presentation/bloc/bfs_bloc/graph_event.dart';
-import 'package:discrete_math/core/graph/presentation/bloc/bfs_bloc/graph_state.dart';
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
-import 'package:discrete_math/core/graph/other/edit/cubit/edit_bloc.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/edit_bloc/edit_bloc.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/graph_bloc/graphs_bloc.dart';
 import 'package:discrete_math/core/graph/presentation/painter/graph_painer.dart';
-import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
-import 'package:discrete_math/presentation/widget/treeVertex_widget.dart';
+import 'package:discrete_math/shared/widgets/text_controller_widget.dart';
+import 'package:discrete_math/shared/widgets/treeVertex_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,7 +31,7 @@ const double vertexRadius = 25;
 
 class _EditorScreenState extends ConsumerState<EditorScreen> {
   final TransformationController _controller =
-      TransformationController(); // мозок
+      TransformationController(); 
 
   void _zoom(double delta) {
     final scale = (_controller.value.getMaxScaleOnAxis() + delta).clamp(
