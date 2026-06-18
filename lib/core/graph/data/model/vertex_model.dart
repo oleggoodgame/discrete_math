@@ -1,9 +1,8 @@
-
 import 'dart:convert';
+import 'dart:core';
 import 'dart:ui';
 
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
-
 
 class VertexModel extends Vertex {
   const VertexModel({
@@ -42,7 +41,20 @@ class VertexModel extends Vertex {
       state: VertexState.values.byName(map['state'] as String),
     );
   }
-
+  // factory Set<VertexModel>.fromSetVertex(Set<Vertex> data) {
+  //   final Set<VertexModel> vertexModelSet = {};
+  //   for (var v in data) {
+  //     vertexModelSet.add(VertexModel.fromEntity(v));
+  //   }
+  //   return vertexModelSet;
+  // }// так не мож як я розумію? 
+  static Set<VertexModel> fromSetVertex(Set<Vertex> data) {
+    final Set<VertexModel> vertexModelSet = {};
+    for (var v in data) {
+      vertexModelSet.add(VertexModel.fromEntity(v));
+    }
+    return vertexModelSet;
+  }
   String toJson() => json.encode(toMap());
 
   factory VertexModel.fromJson(String source) =>

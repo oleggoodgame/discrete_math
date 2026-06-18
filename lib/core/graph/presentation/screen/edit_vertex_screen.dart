@@ -1,8 +1,8 @@
 import 'package:discrete_math/core/graph/presentation/provider/graph_provider.dart';
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
-import 'package:discrete_math/presentation/widget/labaled_field_row_children.dart';
-import 'package:discrete_math/presentation/widget/primary_button_widget.dart';
-import 'package:discrete_math/presentation/widget/text_controller_widget.dart';
+import 'package:discrete_math/shared/widgets/labaled_field_row_children.dart';
+import 'package:discrete_math/shared/widgets/primary_button_widget.dart';
+import 'package:discrete_math/shared/widgets/text_controller_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';

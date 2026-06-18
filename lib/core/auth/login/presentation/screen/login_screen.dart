@@ -1,6 +1,6 @@
-import 'package:discrete_math/application/data/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:discrete_math/core/auth/auth/presentation/bloc/auth_bloc.dart';
-import 'package:discrete_math/presentation/widget/text_controller_authentication_widget.dart';
+import 'package:discrete_math/core/auth/widget/text_controller_authentication_widget.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

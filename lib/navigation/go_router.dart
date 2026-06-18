@@ -2,22 +2,22 @@ import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
 import 'package:discrete_math/core/auth/auth/presentation/provider/auth_state_provider.dart';
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_bfs.dart';
-import 'package:discrete_math/core/graph/bfs/service/service_bfs.dart';
-import 'package:discrete_math/core/graph/other/detour/bloc/detour_bloc.dart';
-import 'package:discrete_math/core/graph/other/detour/service/detour_service.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/detoure_bloc/detour_bloc.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_dfs.dart';
-import 'package:discrete_math/core/graph/dfs/service/service_dfs.dart';
-import 'package:discrete_math/presentation/screen/settings/app_info_screen.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/eulirian_bloc/eulirian_bloc.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/hamiltonian_bloc/hamiltonian_bloc.dart';
+import 'package:discrete_math/core/settings/presentation/screen/app_info_screen.dart';
 import 'package:discrete_math/core/auth/login/presentation/screen/login_screen.dart';
 import 'package:discrete_math/core/auth/signup/presentation/screen/signup_screen.dart';
 import 'package:discrete_math/core/graph/presentation/screen/edit_vertex_screen.dart';
 import 'package:discrete_math/core/graph/presentation/screen/editor_screen.dart';
-import 'package:discrete_math/core/graph/favorite/presentation/screen/favorite_screen.dart';
+import 'package:discrete_math/core/favorite/presentation/screen/favorite_screen.dart';
 import 'package:discrete_math/core/graph/presentation/screen/graphs_screen.dart';
 import 'package:discrete_math/core/graph/presentation/screen/information_screen.dart';
-import 'package:discrete_math/presentation/screen/settings/more_screen.dart';
-import 'package:discrete_math/presentation/screen/settings/settings_screen.dart';
-import 'package:discrete_math/presentation/widget/main_shell_widget.dart';
+import 'package:discrete_math/core/settings/presentation/screen/more_screen.dart';
+import 'package:discrete_math/core/settings/presentation/screen/settings_screen.dart';
+import 'package:discrete_math/injections/service_locator.dart';
+import 'package:discrete_math/shared/widgets/main_shell_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -72,9 +72,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
           return MultiBlocProvider(
             providers: [
-              BlocProvider(create: (_) => DfsBloc(service: DfsService())),
-              BlocProvider(create: (_) => BfsBloc(service: BfsService())),
-              BlocProvider(create: (_) => DetourBloc(service: DetourService())),
+              BlocProvider(create: (_) => DfsBloc(dfsUsecase: getIt())),
+              BlocProvider(create: (_) => BfsBloc(bfsUsecase: getIt())),
+              BlocProvider(create: (_) => DetourBloc(detourUsecase: getIt())),
             ],
             child: EditorScreen(graph: graph),
           );
@@ -107,7 +107,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/information_screen',
         builder: (context, state) {
           final graph = state.extra as GraphEntity;
-          return InformationScreen(graph: graph);
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<HamiltonianBloc>(
+                create: (_) => HamiltonianBloc(service: getIt()),
+              ),
+              BlocProvider<EulerianBloc>(
+                create: (_) => EulerianBloc(service: getIt()),
+              ),
+            ],
+            child: InformationScreen(graph: graph),
+          );
         },
       ),
       StatefulShellRoute.indexedStack(
