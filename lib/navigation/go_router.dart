@@ -4,6 +4,8 @@ import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_bfs.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/detoure_bloc/detour_bloc.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_dfs.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/eulirian_bloc/eulirian_bloc.dart';
+import 'package:discrete_math/core/graph/presentation/bloc/hamiltonian_bloc/hamiltonian_bloc.dart';
 import 'package:discrete_math/core/settings/presentation/screen/app_info_screen.dart';
 import 'package:discrete_math/core/auth/login/presentation/screen/login_screen.dart';
 import 'package:discrete_math/core/auth/signup/presentation/screen/signup_screen.dart';
@@ -14,6 +16,7 @@ import 'package:discrete_math/core/graph/presentation/screen/graphs_screen.dart'
 import 'package:discrete_math/core/graph/presentation/screen/information_screen.dart';
 import 'package:discrete_math/core/settings/presentation/screen/more_screen.dart';
 import 'package:discrete_math/core/settings/presentation/screen/settings_screen.dart';
+import 'package:discrete_math/injections/service_locator.dart';
 import 'package:discrete_math/shared/widgets/main_shell_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -72,6 +75,12 @@ final routerProvider = Provider<GoRouter>((ref) {
               BlocProvider(create: (_) => DfsBloc(dfsUsecase: getIt())),
               BlocProvider(create: (_) => BfsBloc(bfsUsecase: getIt())),
               BlocProvider(create: (_) => DetourBloc(detourUsecase: getIt())),
+              BlocProvider<HamiltonianBloc>(
+                create: (_) => HamiltonianBloc(service: getIt()),
+              ),
+              BlocProvider<EulerianBloc>(
+                create: (_) => EulerianBloc(service: getIt()),
+              ),
             ],
             child: EditorScreen(graph: graph),
           );

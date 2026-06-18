@@ -1,5 +1,5 @@
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
-import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/edit_bloc/edit_bloc.dart';
 import 'package:discrete_math/core/favorite/presentation/bloc/favorite_cubit.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/graph_bloc/graphs_bloc.dart';

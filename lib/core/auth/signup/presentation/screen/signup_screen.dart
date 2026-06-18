@@ -1,4 +1,4 @@
-import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:discrete_math/core/auth/auth/presentation/bloc/auth_bloc.dart';
 import 'package:discrete_math/core/auth/widget/text_controller_authentication_widget.dart';
 import 'package:email_validator/email_validator.dart';

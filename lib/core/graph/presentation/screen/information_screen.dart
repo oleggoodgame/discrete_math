@@ -1,7 +1,7 @@
 import 'package:discrete_math/core/graph/domain/entity/eulerian_type.dart';
 import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
-import 'package:discrete_math/shared/theme/style/primary_button_style.dart';
-import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/primary_button_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:discrete_math/core/graph/presentation/provider/graph_provider.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/eulirian_bloc/eulirian_bloc.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/graph_bloc/graphs_bloc.dart';

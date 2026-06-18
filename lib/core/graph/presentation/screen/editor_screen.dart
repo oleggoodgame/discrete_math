@@ -1,5 +1,5 @@
 import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
-import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/graph_event.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/graph_state.dart';
 import 'package:discrete_math/core/graph/presentation/provider/fab_provider.dart';

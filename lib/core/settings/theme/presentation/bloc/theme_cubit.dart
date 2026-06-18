@@ -1,9 +1,9 @@
-import 'package:discrete_math/shared/theme/service/service_theme.dart';
-import 'package:discrete_math/shared/theme/state/state_theme.dart';
+import 'package:discrete_math/core/settings/theme/domain/repository/theme_repository.dart';
+import 'package:discrete_math/core/settings/theme/presentation/bloc/state_theme.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ThemeCubit extends Cubit<AppThemeMode> {
-  final ThemeLocalDataSource dataSource;
+  final ThemeRepository dataSource;
 
   ThemeCubit(this.dataSource) : super(AppThemeMode.loading) {
     _loadTheme();

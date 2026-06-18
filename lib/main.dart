@@ -1,26 +1,14 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
-import 'package:discrete_math/shared/theme/style/dark_style.dart';
-import 'package:discrete_math/shared/theme/style/light_style.dart';
+import 'package:discrete_math/injections/service_locator.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/dark_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/light_style.dart';
 import 'package:discrete_math/core/auth/auth/presentation/bloc/auth_bloc.dart';
 import 'package:discrete_math/core/auth/internet_connection/presentation/bloc/internet_cubit.dart';
-import 'package:discrete_math/core/auth/internet_connection/presentation/bloc/internet_state.dart';
-import 'package:discrete_math/core/auth/signup/presentation/bloc/signup_bloc.dart';
-import 'package:discrete_math/core/auth/signup/service/signup_service.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/edit_bloc/edit_bloc.dart';
-import 'package:discrete_math/core/graph/other/edit/service/edit_service.dart';
-import 'package:discrete_math/core/graph/presentation/bloc/eulirian_bloc/eulirian_bloc.dart';
-import 'package:discrete_math/core/graph/other/eulerian/service/eulirian_service.dart';
 import 'package:discrete_math/core/favorite/presentation/bloc/favorite_cubit.dart';
-import 'package:discrete_math/core/favorite/service/favorite_service.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/graph_bloc/graphs_bloc.dart';
-import 'package:discrete_math/core/graph/graphs/service/graphs_service.dart';
-import 'package:discrete_math/core/graph/presentation/bloc/hamiltonian_bloc/hamiltonian_bloc.dart';
-import 'package:discrete_math/core/graph/other/hamiltonian/service/hamiltonian_service.dart';
-import 'package:discrete_math/core/auth/login/presentation/bloc/login_bloc.dart';
-import 'package:discrete_math/core/auth/login/service/login_service.dart';
-import 'package:discrete_math/shared/theme/cubit/theme_cubit.dart';
-import 'package:discrete_math/shared/theme/service/service_theme.dart';
-import 'package:discrete_math/shared/theme/state/state_theme.dart';
+import 'package:discrete_math/core/settings/theme/presentation/bloc/theme_cubit.dart';
+import 'package:discrete_math/core/settings/theme/presentation/bloc/state_theme.dart';
 import 'package:discrete_math/firebase_options.dart';
 import 'package:discrete_math/navigation/go_router.dart';
 import 'package:discrete_math/core/auth/internet_connection/presentation/screen/no_internet_screen.dart';
@@ -34,6 +22,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 //https://medium.com/@punithsuppar7795/exploring-the-interactive-viewer-in-flutter-29fa05f786a5
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await ServiceLocator().init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final prefs = await SharedPreferences.getInstance();
   runApp(
@@ -55,38 +44,20 @@ class MainApp extends ConsumerWidget {
 
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (_) => InternetCubit(connectivity: connectivity)),
-        // BlocProvider<DetourBloc>(
-        //   create: (_) => DetourBloc(service: DetourService()),
-        // ),
-        // BlocProvider<BfsBloc>(create: (_) => BfsBloc(service: BfsService())),
-        // BlocProvider<DfsBloc>(create: (_) => DfsBloc(service: DfsService())),
-        BlocProvider<HamiltonianBloc>(
-          create: (_) => HamiltonianBloc(service: HamiltonianService()),
+        BlocProvider(create: (_) => ConnectivityCubit(getIt())),
+        BlocProvider<GraphsCubit>(create: (_) => GraphsCubit(getIt())),
+        BlocProvider<EditCubit>(
+          create: (_) =>
+              EditCubit(editGraphUsecase: getIt(), createGraphUsecase: getIt()),
         ),
-        BlocProvider<EulerianBloc>(
-          create: (_) => EulerianBloc(service: EulirianService()),
-        ),
-        BlocProvider<LoginBloc>(create: (_) => LoginBloc(LoginService())),
-        BlocProvider<SignupBloc>(create: (_) => SignupBloc(SignupService())),
-        BlocProvider<GraphsCubit>(create: (_) => GraphsCubit(GraphsService())),
-        BlocProvider<EditCubit>(create: (_) => EditCubit(EditService())),
-        BlocProvider<FavoriteCubit>(
-          create: (_) => FavoriteCubit(FavoriteService()),
-        ),
-        BlocProvider<AuthBloc>(
-          create: (_) => AuthBloc(),
-        ),
-        
-        BlocProvider(
-          create: (context) => ThemeCubit(
-            ThemeLocalDataSource(context.read<SharedPreferences>()),
-          ),
-        ),
+        BlocProvider<FavoriteCubit>(create: (_) => FavoriteCubit(getIt())),
+        BlocProvider<AuthBloc>(create: (_) => AuthBloc(getIt(), getIt())),
+
+        BlocProvider(create: (context) => ThemeCubit(getIt())),
       ],
-      child: BlocBuilder<InternetCubit, InternetState>(
+      child: BlocBuilder<ConnectivityCubit, ConnectivityState>(
         builder: (context, state) {
-          if (state is InternetDisconnected) {
+          if (state is ConnectivityDisconnected) {
             return const MaterialApp(home: NoInternetScreen());
           }
 

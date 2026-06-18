@@ -1,5 +1,5 @@
-import 'package:discrete_math/shared/theme/style/info_str.dart';
-import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/info_str.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 

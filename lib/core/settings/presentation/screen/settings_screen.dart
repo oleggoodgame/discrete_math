@@ -1,4 +1,4 @@
-import 'package:discrete_math/shared/theme/style/theme_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/theme_style.dart';
 import 'package:discrete_math/shared/widgets/account_widget.dart';
 import 'package:discrete_math/core/settings/presentation/widget/settings_card_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';

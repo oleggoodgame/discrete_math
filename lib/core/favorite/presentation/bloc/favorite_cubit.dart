@@ -1,11 +1,11 @@
+import 'package:discrete_math/core/favorite/domain/repostiory/favorite_repository.dart';
 import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
-import 'package:discrete_math/core/favorite/service/favorite_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 part 'favorite_state.dart';
 
 class FavoriteCubit extends Cubit<FavoriteState> {
-  final FavoriteService service;
+  final FavoriteRepository service;
 
   FavoriteCubit(this.service) : super(FavoriteInitial());
 

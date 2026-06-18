@@ -1,4 +1,4 @@
-import 'package:discrete_math/shared/theme/style/primary_button_style.dart';
+import 'package:discrete_math/core/settings/theme/presentation/style/primary_button_style.dart';
 import 'package:flutter/material.dart';
 
 class PrimaryButton extends StatelessWidget {

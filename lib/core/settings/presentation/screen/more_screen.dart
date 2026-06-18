@@ -1,5 +1,5 @@
 import 'package:discrete_math/core/settings/presentation/widget/settings_card_widget.dart';
-import 'package:discrete_math/shared/theme/widget/theme_switch_widget.dart';
+import 'package:discrete_math/core/settings/theme/presentation/widget/theme_switch_widget.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';

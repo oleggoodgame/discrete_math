@@ -1,5 +1,5 @@
-import 'package:discrete_math/shared/theme/cubit/theme_cubit.dart';
-import 'package:discrete_math/shared/theme/state/state_theme.dart';
+import 'package:discrete_math/core/settings/theme/presentation/bloc/theme_cubit.dart';
+import 'package:discrete_math/core/settings/theme/presentation/bloc/state_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
