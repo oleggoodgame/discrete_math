@@ -75,12 +75,6 @@ final routerProvider = Provider<GoRouter>((ref) {
               BlocProvider(create: (_) => DfsBloc(dfsUsecase: getIt())),
               BlocProvider(create: (_) => BfsBloc(bfsUsecase: getIt())),
               BlocProvider(create: (_) => DetourBloc(detourUsecase: getIt())),
-              BlocProvider<HamiltonianBloc>(
-                create: (_) => HamiltonianBloc(service: getIt()),
-              ),
-              BlocProvider<EulerianBloc>(
-                create: (_) => EulerianBloc(service: getIt()),
-              ),
             ],
             child: EditorScreen(graph: graph),
           );
@@ -113,7 +107,17 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: '/information_screen',
         builder: (context, state) {
           final graph = state.extra as GraphEntity;
-          return InformationScreen(graph: graph);
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider<HamiltonianBloc>(
+                create: (_) => HamiltonianBloc(service: getIt()),
+              ),
+              BlocProvider<EulerianBloc>(
+                create: (_) => EulerianBloc(service: getIt()),
+              ),
+            ],
+            child: InformationScreen(graph: graph),
+          );
         },
       ),
       StatefulShellRoute.indexedStack(
