@@ -54,4 +54,18 @@
 //     expect(find.text('Enter a valid email'), findsNothing);
 //     expect(find.text('Password must be at least 6 characters'), findsNothing);
 //   });
+// // }
+// class Edge{
+//   String from;
+//   String to;
+//   int weight;
+//   Edge(this.from, this.to, this.weight);
+//   Edge.unweighted(this.from, this.to, 1);
+//   factory Edge.fromMap(Map<String, dynamic> map){
+//     return Vertex._internal(
+//       map['from'] as String,
+//       map['to'] as String,
+//       map['weight'] as int,
+//     );
+//   }
 // }

@@ -2,6 +2,7 @@
 import 'dart:collection';
 
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
+import 'package:discrete_math/shared/errors/error.dart';
 
 class DetourUsecase {
   // Stream<Set<Vertex>> detourSteps({
@@ -499,7 +500,6 @@ class DetourUsecase {
       print("VisitedStart: $visitedStart");
       print("VisitedFind: $visitedFind");
 
-      /// --- START SIDE ---
       final s = queueStart.removeFirst();
       print("Process START node: $s");
 
@@ -521,7 +521,6 @@ class DetourUsecase {
       }
       if (meetId != null) break;
 
-      /// --- FIND SIDE ---
       final f = queueFind.removeFirst();
       print("Process FIND node: $f");
 
@@ -548,7 +547,7 @@ class DetourUsecase {
 
     if (meetId == null) {
       print("❌ NO MEETING POINT");
-      throw("❌ NO MEETING POINT");
+      throw DetourFailure();
     }
 
     print("=== RECONSTRUCT PATH from meetId=$meetId ===");
@@ -560,7 +559,6 @@ class DetourUsecase {
 
     final path = <String>[];
 
-    /// backtrack START
     String? cur = meetId;
     while (cur != null) {
       path.insert(0, cur);
@@ -568,7 +566,6 @@ class DetourUsecase {
       cur = parentStart[cur];
     }
 
-    /// forward FIND
     cur = parentFind[meetId];
     while (cur != null) {
       print("Forward FIND: $cur");
