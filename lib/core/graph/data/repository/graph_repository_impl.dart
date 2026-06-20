@@ -4,6 +4,7 @@ import 'package:discrete_math/core/graph/data/model/vertex_model.dart';
 import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
 import 'package:discrete_math/core/graph/domain/repostiory/graph_repository.dart';
 import 'package:discrete_math/core/graph/domain/entity/graph_entity.dart';
+import 'package:discrete_math/shared/errors/error.dart';
 
 class GraphRepositoryImpl implements GraphRepository {
   final GraphDatasource graphDatasource;
@@ -14,7 +15,8 @@ class GraphRepositoryImpl implements GraphRepository {
       final graphModel = GraphModel.fromEntity(graph);
       await graphDatasource.deleteGraph(graphModel);
     } catch (e) {
-      return;
+      print('graph failed: $e');
+      throw const GraphFailure();
     }
   }
 
@@ -23,7 +25,8 @@ class GraphRepositoryImpl implements GraphRepository {
     try {
       return await graphDatasource.getAllGraphs();
     } catch (e) {
-      throw Exception(""); // Тут додам в мабйтньому нормальний опис помилки
+      print('graph failed: $e');
+      throw const GraphFailure();
     }
   }
 
@@ -36,7 +39,8 @@ class GraphRepositoryImpl implements GraphRepository {
       final vertexModel = VertexModel.fromSetVertex(data);
       return await graphDatasource.createGraph(title: title, data: vertexModel);
     } catch (e) {
-      throw Exception(""); // Тут додам в мабйтньому нормальний опис помилки
+      print('graph failed: $e');
+      throw const GraphFailure();
     }
   }
 
@@ -49,7 +53,8 @@ class GraphRepositoryImpl implements GraphRepository {
       final vertexModel = VertexModel.fromSetVertex(data);
       return await graphDatasource.editGraph(id: id, data: vertexModel);
     } catch (e) {
-      throw Exception(""); // Тут додам в мабйтньому нормальний опис помилки
+      print('graph failed: $e');
+      throw const GraphFailure();
     }
   }
 }

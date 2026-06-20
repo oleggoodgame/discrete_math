@@ -1,6 +1,7 @@
 import 'package:discrete_math/core/settings/theme/data/datasource/theme_datasource.dart';
 import 'package:discrete_math/core/settings/theme/domain/repository/theme_repository.dart';
 import 'package:discrete_math/core/settings/theme/presentation/bloc/state_theme.dart';
+import 'package:discrete_math/shared/errors/error.dart';
 
 class ThemeRepostioryImpl implements ThemeRepository {
   final ThemeDatasource datasource;
@@ -10,7 +11,7 @@ class ThemeRepostioryImpl implements ThemeRepository {
     try {
       return datasource.getTheme();
     } catch (e) {
-      throw Exception();
+      throw ThemeFailure();
     }
   }
 
@@ -19,7 +20,7 @@ class ThemeRepostioryImpl implements ThemeRepository {
     try {
       return await datasource.saveTheme(theme);
     } catch (e) {
-      throw Exception();
+      throw ThemeFailure();
     }
   }
 }

@@ -45,7 +45,9 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       return null;
     },
-
+    onException: (context, state, router) {
+      
+    },
     routes: [
       GoRoute(
         path: '/login',

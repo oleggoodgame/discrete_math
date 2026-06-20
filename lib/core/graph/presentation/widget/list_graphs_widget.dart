@@ -22,45 +22,53 @@ class ListGraphsWidget extends ConsumerWidget {
       },
       child: BlocBuilder<GraphsCubit, GraphsState>(
         builder: (context, state) {
-          if (state is GraphsLoading) {
-            print("Loading");
+          return BlocBuilder<FavoriteCubit, FavoriteState>(
+            builder: (fav_context, fav_state) {
+              if (fav_state is FavoriteError) {
+                print(fav_state.message);
+                return Center(child: Text(fav_state.message));
+              }
+              if (state is GraphsLoading) {
+                print("Loading");
 
-            return const Center(child: CircularProgressIndicator());
-          }
-          if (state is GraphsError) {
-            print(state.message);
-            return const Center(child: Text("ERROR"));
-          }
-          if (state is GraphsLoaded) {
-            print("LOADED");
-            // print(state.graphs.length);
-            // print(state.graphs.first);
-            if (state.graphs.isNotEmpty) {
-              return ListView.builder(
-                itemCount: state.graphs.length,
-                itemBuilder: (context, index) {
-                  final graph = state.graphs[index];
+                return const Center(child: CircularProgressIndicator());
+              }
+              if (state is GraphsError) {
+                print(state.message);
+                return Center(child: Text(state.message));
+              }
+              if (state is GraphsLoaded) {
+                print("LOADED");
+                // print(state.graphs.length);
+                // print(state.graphs.first);
+                if (state.graphs.isNotEmpty) {
+                  return ListView.builder(
+                    itemCount: state.graphs.length,
+                    itemBuilder: (context, index) {
+                      final graph = state.graphs[index];
 
-                  final isFavorite = favorites.any((id) => id == graph.id);
+                      final isFavorite = favorites.any((id) => id == graph.id);
 
-                  return GraphWidget(isFavorite: isFavorite, graph: graph);
-                },
-              );
-            } else {
+                      return GraphWidget(isFavorite: isFavorite, graph: graph);
+                    },
+                  );
+                } else {
+                  return Center(
+                    child: Text(
+                      "There is no graphs",
+                      style: Theme.of(context).textTheme.titleLarge,
+                    ),
+                  );
+                }
+              }
+
               return Center(
                 child: Text(
                   "There is no graphs",
                   style: Theme.of(context).textTheme.titleLarge,
                 ),
               );
-            }
-          }
-
-          return Center(
-            child: Text(
-              "There is no graphs",
-              style: Theme.of(context).textTheme.titleLarge,
-            ),
+            },
           );
         },
       ),

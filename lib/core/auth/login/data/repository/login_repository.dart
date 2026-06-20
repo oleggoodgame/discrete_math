@@ -1,5 +1,6 @@
 import 'package:discrete_math/core/auth/login/data/datasource/login_firebase_datasource.dart';
 import 'package:discrete_math/core/auth/login/domain/repository/ilogin_repository.dart';
+import 'package:discrete_math/shared/errors/error.dart';
 
 class LoginRepositoryImpl implements LoginRepostiory {
   final LoginDatasource loginDatasource;
@@ -9,7 +10,7 @@ class LoginRepositoryImpl implements LoginRepostiory {
     try {
       await loginDatasource.login(email, password);
     } catch (e) {
-      return;
+      throw const InvalidCredentialsFailure();
     }
   }
 
@@ -18,7 +19,7 @@ class LoginRepositoryImpl implements LoginRepostiory {
     try {
       await loginDatasource.logout();
     } catch (e) {
-      return;
+      throw const InvalidCredentialsFailure();
     }
   }
 }
