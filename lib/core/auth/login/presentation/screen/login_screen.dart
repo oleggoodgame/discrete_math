@@ -115,7 +115,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           if (v.length < 6) {
                             return 'Password must be at least 6 characters';
                           }
-                          if(v.length>77){
+                          if (v.length > 77) {
                             return "The password is too long, please change it";
                           }
                           return null;
@@ -131,6 +131,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             height: 52,
                             width: double.infinity,
                             child: ElevatedButton(
+                              key: const Key('login_button'),
                               onPressed: isLoading
                                   ? null
                                   : () => _onLoginPressed(context),
@@ -212,6 +213,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       children: [
                         const Text("Don't have an account? "),
                         InkWell(
+                          key: const Key('goto_signup'),
                           onTap: () => context.go('/signup'),
                           child: const Text(
                             "Sign Up",

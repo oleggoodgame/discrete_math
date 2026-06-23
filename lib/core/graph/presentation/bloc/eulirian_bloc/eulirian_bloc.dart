@@ -13,9 +13,8 @@ class EulerianBloc extends Bloc<EulerianEvent, EulirianState> {
     on<EulerianStart>((event, emit) async {
       emit(EulirianProcessing());
 
-      await for (final result in service(vertices: event.vertices)) {
-        emit(EulirianResult(type: result));
-      }
+      final result = await service(vertices: event.vertices);
+      emit(EulirianResult(type: result));
     });
   }
 }

@@ -464,11 +464,11 @@ class DetourUsecase {
   //   return false;
   // }
 
-  Stream<Set<Vertex>> call({//FINAL
+  Future<Set<Vertex>> call({//FINAL
     required Vertex start,
     required Vertex find,
     required Map<String, Vertex> graph,
-  }) async* {
+  }) async {
     final queueStart = Queue<String>();
     final queueFind = Queue<String>();
 
@@ -575,7 +575,7 @@ class DetourUsecase {
 
     print("✅ FINAL PATH: $path");
 
-    yield path
+    return path
         .map((id) => graph[id]!.copyWith(state: VertexState.visited))
         .toSet();
   }

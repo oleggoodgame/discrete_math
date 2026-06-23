@@ -1,7 +1,4 @@
-// import 'package:discrete_math/core/auth/login/presentation/bloc/login_bloc.dart';
-// import 'package:discrete_math/core/auth/auth/auth_event.dart';
-// import 'package:discrete_math/core/auth/login/service/login_service.dart';
-// import 'package:discrete_math/core/auth/auth/bloc/auth_state.dart';
+// import 'package:discrete_math/core/auth/auth/presentation/bloc/auth_bloc.dart';
 // import 'package:discrete_math/core/auth/login/presentation/screen/login_screen.dart';
 // import 'package:flutter/material.dart';
 // import 'package:flutter_bloc/flutter_bloc.dart';
