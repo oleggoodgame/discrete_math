@@ -28,7 +28,7 @@ class TextControllerAuthenticationWidget extends ConsumerWidget {
     return SizedBox(
       width: fieldWidth,
       child: TextFormField(
-        key: super.key,
+        // key: super.key,
         controller: controller,
         validator: validator,
         obscureText: password ? obscure : false,

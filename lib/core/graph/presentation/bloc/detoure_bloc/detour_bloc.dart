@@ -3,6 +3,7 @@ import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 part 'detour_state.dart';
 part 'detour_event.dart';
+
 class DetourBloc extends Bloc<DetourEvent, DetourState> {
   final DetourUsecase detourUsecase;
 
@@ -11,16 +12,12 @@ class DetourBloc extends Bloc<DetourEvent, DetourState> {
       try {
         emit(DetourProcessing());
         print("Start Detour");
-        await for (final step in detourUsecase(
+        final result = await detourUsecase(
           start: event.start,
           find: event.find,
           graph: event.graph,
-        )) {
-          print("STEP: $step");
-
-          emit(DetourResult(step));
-        }
-
+        );
+        emit(DetourResult(result));
         await Future.delayed(const Duration(seconds: 5));
         print("reset");
         final reset = event.graph.values
