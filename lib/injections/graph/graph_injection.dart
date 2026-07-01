@@ -8,6 +8,7 @@ import 'package:discrete_math/core/graph/domain/usecases/dfs_usecase.dart';
 import 'package:discrete_math/core/graph/domain/usecases/edit_graph_usecase.dart';
 import 'package:discrete_math/core/graph/domain/usecases/eulerian_usecase.dart';
 import 'package:discrete_math/core/graph/domain/usecases/hamiltonian_usecase.dart';
+import 'package:discrete_math/core/graph/domain/usecases/loadGraphs_usecase.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_bfs.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/bfs_dfs_bloc/bloc_dfs.dart';
 import 'package:discrete_math/core/graph/presentation/bloc/detoure_bloc/detour_bloc.dart';
@@ -34,7 +35,9 @@ class GraphInjection {
     sl.registerLazySingleton(() => DetourUsecase());
     sl.registerLazySingleton(() => EulerianUsecase());
     sl.registerLazySingleton(() => HamiltonianUsecase());
-
+    sl.registerLazySingleton(
+      () => LoadgraphsUsecase(graphRepository: sl<GraphRepository>()),
+    );
     //bloc
     sl.registerFactory<BfsBloc>(() => BfsBloc(bfsUsecase: sl<BfsUsecase>()));
     sl.registerFactory<DfsBloc>(() => DfsBloc(dfsUsecase: sl<DfsUsecase>()));
@@ -54,6 +57,8 @@ class GraphInjection {
     );
 
     sl.registerFactory<GraphsCubit>(() => GraphsCubit(sl<GraphRepository>()));
-    sl.registerFactory<HamiltonianBloc>(() => HamiltonianBloc(service: sl<HamiltonianUsecase>()));
+    sl.registerFactory<HamiltonianBloc>(
+      () => HamiltonianBloc(service: sl<HamiltonianUsecase>()),
+    );
   }
 }

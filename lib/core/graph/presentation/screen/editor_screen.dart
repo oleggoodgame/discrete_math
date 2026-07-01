@@ -26,12 +26,11 @@ class EditorScreen extends ConsumerStatefulWidget {
   ConsumerState<EditorScreen> createState() => _EditorScreenState();
 }
 
-const double canvasSize = 3000;
+const double canvasSize = 1500;
 const double vertexRadius = 25;
 
 class _EditorScreenState extends ConsumerState<EditorScreen> {
-  final TransformationController _controller =
-      TransformationController(); 
+  final TransformationController _controller = TransformationController();
 
   void _zoom(double delta) {
     final scale = (_controller.value.getMaxScaleOnAxis() + delta).clamp(
@@ -191,16 +190,20 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                     ),
                     child: Stack(
                       children: [
-                        CustomPaint(
-                          size: const Size(canvasSize, canvasSize),
-                          painter: GraphPainter(vertices: vertices),
+                        RepaintBoundary(
+                          child: CustomPaint(
+                            size: const Size(canvasSize, canvasSize),
+                            painter: GraphPainter(vertices: vertices),
+                          ),
                         ),
 
                         for (final vertex in vertices)
                           Positioned(
                             left: vertex.offset.dx - 25,
                             top: vertex.offset.dy - 25,
-                            child: TreeVertexWidget(vertex: vertex),
+                            child: RepaintBoundary(
+                              child: TreeVertexWidget(vertex: vertex),
+                            ),
                           ),
 
                         if (selectedVertex != null)

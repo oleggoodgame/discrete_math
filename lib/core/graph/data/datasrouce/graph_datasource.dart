@@ -34,17 +34,32 @@ class GraphDatasourceImpl implements GraphDatasource {
   @override
   Future<List<GraphModel>> getAllGraphs() async {
     final FirebaseFirestore db = FirebaseFirestore.instance;
-
     final User auth = FirebaseAuth.instance.currentUser!;
 
-    final snapshot = await db
+    final query = await db
         .collection('accounts')
         .doc(auth.uid)
         .collection("graphs")
-        .orderBy('createdAt', descending: true)
-        .get();
-    print(snapshot.size);
-    return snapshot.docs.map((doc) => GraphModel.fromMap(doc.data())).toList();
+        .orderBy('createdAt', descending: true);
+
+    try {
+      // 1. Показуємо кеш миттєво
+      final cached = await query.get(const GetOptions(source: Source.cache));
+
+      // 2. У фоні оновлюємо з сервера (не чекаємо!)
+      query
+          .get(const GetOptions(source: Source.server))
+          .then((fresh) {
+            // якщо дані відрізняються — emit нового стану
+          })
+          .catchError((_) {}); // ігноруємо помилку мережі
+
+      return cached.docs.map((doc) => GraphModel.fromMap(doc.data())).toList();
+    } catch (_) {
+      // Кешу немає → чекаємо мережу
+      final fresh = await query.get();
+      return fresh.docs.map((doc) => GraphModel.fromMap(doc.data())).toList();
+    }
   }
 
   @override

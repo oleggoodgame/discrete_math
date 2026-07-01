@@ -6,7 +6,7 @@ part of 'graph_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$graphProviderHash() => r'cd7f78582cefe07d957c5553523533f02633bcff';
+String _$graphProviderHash() => r'0fd6e9720900f45626f8e6fe2506399eb68242c2';
 
 /// See also [GraphProvider].
 @ProviderFor(GraphProvider)

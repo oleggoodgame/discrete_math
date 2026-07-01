@@ -14,7 +14,7 @@ class GoogleDataSource implements AuthDatasource {
 
     try {
       print("🔹 Initializing GoogleSignIn with serverClientId...");
-      await GoogleSignIn.instance.initialize(serverClientId: GOOGLE);
+      await GoogleSignIn.instance.initialize(serverClientId: SecreteCode.googleCode);
       print("✅ GoogleSignIn initialized");
 
       GoogleSignInAccount? googleUser;

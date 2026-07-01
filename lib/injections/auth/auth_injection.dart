@@ -12,6 +12,7 @@ import 'package:discrete_math/core/auth/login/domain/repository/ilogin_repositor
 import 'package:discrete_math/core/auth/signup/data/datasrouce/signup_datasrouce.dart';
 import 'package:discrete_math/core/auth/signup/data/repository/signup_repository_impl.dart';
 import 'package:discrete_math/core/auth/signup/domain/repostiory/signup_repostiory.dart';
+import 'package:discrete_math/core/graph/domain/usecases/loadGraphs_usecase.dart';
 import 'package:get_it/get_it.dart';
 
 class AuthInjection {
@@ -40,7 +41,7 @@ class AuthInjection {
     );
     //bloc
     sl.registerFactory<AuthBloc>(
-      () => AuthBloc(sl<LoginRepostiory>(), sl<SignupRepostiory>()),
+      () => AuthBloc(sl<LoginRepostiory>(), sl<SignupRepostiory>(), sl<LoadgraphsUsecase>()),
     );
     sl.registerFactory<ConnectivityCubit>(
       () => ConnectivityCubit(sl<ConnectivityRepository>()),

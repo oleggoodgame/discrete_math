@@ -4,31 +4,10 @@ import 'package:discrete_math/core/graph/domain/entity/vertex_entity.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'graph_provider.g.dart';
-
 @riverpod
 class GraphProvider extends _$GraphProvider {
   @override
-  Set<Vertex> build() {
-    return {};
-    //   Vertex(data: 'A', offset: const Offset(100, 100), connection: {'B', 'C'}),
-    //   Vertex(data: 'B', offset: const Offset(200, 200), connection: {'A'}),
-    //   Vertex(
-    //     data: 'C',
-    //     offset: const Offset(300, 100),
-    //     connection: {'A', 'D', 'V'},
-    //   ),
-    //   Vertex(data: 'D', offset: const Offset(300, 300), connection: {'C', 'Q'}),
-    //   Vertex(
-    //     data: 'Q',
-    //     offset: const Offset(400, 400),
-    //     connection: {'D', 'V', 'U'},
-    //   ),
-
-    //   Vertex(data: 'V', offset: const Offset(400, 300), connection: {'C', 'Q'}),
-
-    //   Vertex(data: 'U', offset: const Offset(200, 500), connection: {'V', 'Q'}),
-    // };
-  }
+  Set<Vertex> build() => {};
 
   Set<Vertex>? _snapshot;
 
@@ -40,9 +19,7 @@ class GraphProvider extends _$GraphProvider {
   }
 
   void setHead(Vertex vertex) {
-    final updated = {vertex, ...state.where((v) => v.data != vertex.data)};
-
-    state = updated;
+    state = {vertex, ...state.where((v) => v.data != vertex.data)};
   }
 
   void updateOffset(String data, Offset position) {
@@ -53,40 +30,17 @@ class GraphProvider extends _$GraphProvider {
   }
 
   void remove(Vertex vertex) {
-    state = {
-      for (final v in state)
-        if (v == vertex)
-          null
-        else
-          v.copyWith(
-            connection: v.connection.where((c) => c != vertex.data).toSet(),
-          ),
-    }.whereType<Vertex>().toSet();
+    state = state
+        .where((v) => v != vertex)
+        .map((v) => v.copyWith(
+              connection: v.connection.where((c) => c != vertex.data).toSet(),
+            ))
+        .toSet();
   }
 
   void connectVertices(String a, String b) {
-    print("\n=== connectVertices CALLED ===");
-    print("$a, $b");
+    if (a == b) return;
 
-    if (a == b) {
-      print("❌ Same vertex, skip");
-      return;
-    }
-
-    print("State BEFORE:");
-    for (final v in state) {
-      print("  ${v.data} -> ${v.connection}");
-    }
-    for (final v in state) {
-      print("$v: ${v.connection}");
-      if (v.connection.isEmpty) {
-        print("Одне встав ");
-      }
-      if (v.data == a)
-        v.connection.contains(b)
-            ? print(v.connection.where((w) => w != b).toSet())
-            : print({...v.connection, b});
-    }
     state = {
       for (final v in state)
         if (v.data == a)
@@ -104,47 +58,24 @@ class GraphProvider extends _$GraphProvider {
         else
           v,
     };
-    print("State AFTER:");
-    for (final v in state) {
-      print("  ${v.data} -> ${v.connection}");
-    }
-
-    print("=== connectVertices END ===\n");
   }
 
   void editVertex(Vertex updated, Vertex oldOne) {
-    // {F} // {F, K}
-    // {F, K} // {F}
-    print("W");
     if (oldOne.connection.length < updated.connection.length) {
-      print("FIRST");
-      final newOne = updated.connection.difference(oldOne.connection);
-      print(newOne);
-
-      for (final i in newOne) {
+      final newConnections = updated.connection.difference(oldOne.connection);
+      for (final i in newConnections) {
         connectVertices(updated.data, i);
       }
     } else if (oldOne.connection.length == updated.connection.length) {
-      final newOne = updated.connection.difference(oldOne.connection);
-      final newOther = oldOne.connection.difference(updated.connection);
-      newOther.addAll(newOne);
-      print("AAAAAAAAAAAAAAAAAAAAAAA");
-      print(updated.connection);
-      print(oldOne.connection);
-
-      print(newOther);
-
-      for (final i in newOther) {
-        print("WORKED WITH ${updated.data} | $i");
+      final changed = updated.connection
+          .difference(oldOne.connection)
+          .union(oldOne.connection.difference(updated.connection));
+      for (final i in changed) {
         connectVertices(updated.data, i);
       }
     } else {
-      print("SECOND");
-
-      final newOne = oldOne.connection.difference(updated.connection);
-
-      print(newOne);
-      for (final i in newOne) {
+      final removed = oldOne.connection.difference(updated.connection);
+      for (final i in removed) {
         connectVertices(updated.data, i);
       }
     }
@@ -165,6 +96,6 @@ class GraphProvider extends _$GraphProvider {
     }
   }
 
-  bool get isAlgorithmRunning => state.any((v) => v.state != VertexState.idle);
-  // Vertex find(String neighbor) {}
+  bool get isAlgorithmRunning =>
+      state.any((v) => v.state != VertexState.idle);
 }

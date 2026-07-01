@@ -11,10 +11,12 @@ import 'package:discrete_math/core/settings/theme/presentation/bloc/theme_cubit.
 import 'package:discrete_math/core/settings/theme/presentation/bloc/state_theme.dart';
 import 'package:discrete_math/firebase_options.dart';
 import 'package:discrete_math/navigation/go_router.dart';
-import 'package:discrete_math/core/auth/internet_connection/presentation/screen/no_internet_screen.dart';
+// import 'package:discrete_math/core/auth/internet_connection/presentation/screen/no_internet_screen.dart';
+import 'package:discrete_math/secret_code.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -25,6 +27,7 @@ void main() async {
   await ServiceLocator().init();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   final prefs = await SharedPreferences.getInstance();
+  await dotenv.load(fileName: SecreteCode.fileCode);
   runApp(
     ProviderScope(
       child: RepositoryProvider.value(
@@ -40,53 +43,49 @@ class MainApp extends ConsumerWidget {
   final Connectivity connectivity;
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-  
-      final router = ref.watch(routerProvider);
+    final router = ref.watch(routerProvider);
 
-      return MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ConnectivityCubit(getIt())),
-          BlocProvider<GraphsCubit>(create: (_) => GraphsCubit(getIt())),
-          BlocProvider<EditCubit>(
-            create: (_) => EditCubit(
-              editGraphUsecase: getIt(),
-              createGraphUsecase: getIt(),
-            ),
-          ),
-          BlocProvider<FavoriteCubit>(create: (_) => FavoriteCubit(getIt())),
-          BlocProvider<AuthBloc>(create: (_) => AuthBloc(getIt(), getIt())),
-
-          BlocProvider(create: (context) => ThemeCubit(getIt())),
-        ],
-        child: BlocBuilder<ConnectivityCubit, ConnectivityState>(
-          builder: (context, state) {
-            if (state is ConnectivityDisconnected) {
-              return const MaterialApp(home: NoInternetScreen());
-            }
-
-            return BlocBuilder<ThemeCubit, AppThemeMode>(
-              builder: (context, theme) {
-                if (theme == AppThemeMode.loading) {
-                  return const SizedBox();
-                }
-
-                return MaterialApp.router(
-                  debugShowCheckedModeBanner: false,
-                  routerConfig: router,
-                  themeMode: switch (theme) {
-                    AppThemeMode.light => ThemeMode.light,
-                    AppThemeMode.dark => ThemeMode.dark,
-                    AppThemeMode.system => ThemeMode.system,
-                    _ => ThemeMode.system,
-                  },
-                  theme: lightTheme,
-                  darkTheme: darkTheme,
-                );
-              },
-            );
-          },
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ConnectivityCubit(getIt())),
+        BlocProvider<GraphsCubit>(create: (_) => GraphsCubit(getIt())),
+        BlocProvider<EditCubit>(
+          create: (_) =>
+              EditCubit(editGraphUsecase: getIt(), createGraphUsecase: getIt()),
         ),
-      );
-  
+        BlocProvider<FavoriteCubit>(create: (_) => FavoriteCubit(getIt())),
+        BlocProvider<AuthBloc>(create: (_) => AuthBloc(getIt(), getIt(), getIt())),
+
+        BlocProvider(create: (context) => ThemeCubit(getIt())),
+      ],
+      child: BlocBuilder<ConnectivityCubit, ConnectivityState>(
+        builder: (context, state) {
+          // if (state is ConnectivityDisconnected) {
+          //   return const MaterialApp(home: NoInternetScreen());
+          // }
+
+          return BlocBuilder<ThemeCubit, AppThemeMode>(
+            builder: (context, theme) {
+              if (theme == AppThemeMode.loading) {
+                return const SizedBox();
+              }
+
+              return MaterialApp.router(
+                debugShowCheckedModeBanner: false,
+                routerConfig: router,
+                themeMode: switch (theme) {
+                  AppThemeMode.light => ThemeMode.light,
+                  AppThemeMode.dark => ThemeMode.dark,
+                  AppThemeMode.system => ThemeMode.system,
+                  _ => ThemeMode.system,
+                },
+                theme: lightTheme,
+                darkTheme: darkTheme,
+              );
+            },
+          );
+        },
+      ),
+    );
   }
 }
